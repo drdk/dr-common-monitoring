@@ -1,5 +1,6 @@
 ﻿using System;
 using DR.Common.Monitoring.Contract;
+using SolrNet.Exceptions;
 
 namespace DR.Common.Monitoring.Models
 {
@@ -28,6 +29,24 @@ namespace DR.Common.Monitoring.Models
                 try
                 {
                     passed = RunTest(ref message);
+                }
+                catch (SolrConnectionException e)
+                {
+                    passed = false;
+                    exception = e;
+                    try
+                    {
+                        var uri = new Uri(e.Url);
+                        message = string.Format("{0}://{1}:{2}{3}", uri.Scheme, uri.Host, uri.Port, uri.AbsolutePath);
+                    }
+                    catch (ArgumentNullException)
+                    {
+                        
+                    }
+                    catch (UriFormatException)
+                    {
+                        
+                    }
                 }
                 catch (Exception e)
                 {

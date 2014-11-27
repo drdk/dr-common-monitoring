@@ -35,6 +35,7 @@ namespace DR.Common.Monitoring.Models
                 {
                     passed = false;
                     exception = e;
+                    message = nodeName;
                 }
                 finally
                 {
