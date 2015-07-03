@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{AEB08EDB-9282-4C6F-AB10-99F0C069A644}</ProjectGuid>
+    <ProjectGuid>{F4DAD25A-5891-44EA-B192-988C81BA71D9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DR.Common.Monitoring</RootNamespace>
-    <AssemblyName>DR.Common.Monitoring</AssemblyName>
+    <RootNamespace>DR.Common.Monitoring.Web</RootNamespace>
+    <AssemblyName>DR.Common.Monitoring.Web</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,16 +32,18 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Contract\IClusterProbe.cs" />
-    <Compile Include="Contract\IHealthCheck.cs" />
-    <Compile Include="Contract\ISystemStatus.cs" />
-    <Compile Include="Models\CommonClusterProbe.cs" />
-    <Compile Include="Models\CommonHealthCheck.cs" />
-    <Compile Include="Models\Status.cs" />
+    <Compile Include="Models\Monitoring.cs" />
+    <Compile Include="Models\SystemStatusModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SystemStatus.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\rest-api\lib\dr-common-monitoring\src\DR.Common.Monitoring\DR.Common.Monitoring.csproj">
+      <Project>{AEB08EDB-9282-4C6F-AB10-99F0C069A644}</Project>
+      <Name>DR.Common.Monitoring</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

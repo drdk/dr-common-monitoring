@@ -1,6 +1,5 @@
 ﻿using System;
 using DR.Common.Monitoring.Contract;
-using SolrNet.Exceptions;
 
 namespace DR.Common.Monitoring.Models
 {
@@ -30,28 +29,13 @@ namespace DR.Common.Monitoring.Models
                 {
                     passed = RunTest(ref message);
                 }
-                catch (SolrConnectionException e)
-                {
-                    passed = false;
-                    exception = e;
-                    try
-                    {
-                        var uri = new Uri(e.Url);
-                        message = string.Format("{0}://{1}:{2}{3}", uri.Scheme, uri.Host, uri.Port, uri.AbsolutePath);
-                    }
-                    catch (ArgumentNullException)
-                    {
-                        
-                    }
-                    catch (UriFormatException)
-                    {
-                        
-                    }
-                }
                 catch (Exception e)
                 {
                     passed = false;
                     exception = e;
+
+                    HandleException(e, ref message);
+
                 }
                 finally
                 {
@@ -61,6 +45,13 @@ namespace DR.Common.Monitoring.Models
                 return result;
             }
         }
+
+        /// <summary>
+        /// Optionally implemented by derived classes to handle exceptions thrown during GetStatus().
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="message"></param>
+        protected virtual void HandleException(Exception ex, ref string message) { }
 
         /// <summary>
         /// Must be implemented by derived classes. May throw exceptions.
