@@ -40,8 +40,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\rest-api\lib\dr-common-monitoring\src\DR.Common.Monitoring\DR.Common.Monitoring.csproj">
-      <Project>{AEB08EDB-9282-4C6F-AB10-99F0C069A644}</Project>
+    <ProjectReference Include="..\DR.Common.Monitoring\DR.Common.Monitoring.csproj">
+      <Project>{aeb08edb-9282-4c6f-ab10-99f0c069a644}</Project>
       <Name>DR.Common.Monitoring</Name>
     </ProjectReference>
   </ItemGroup>
