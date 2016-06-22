@@ -14,6 +14,9 @@ namespace DR.Common.Monitoring.Web.Models
         [XmlElement(ElementName = "applicationstatus")]
         public string ApplicationStatus { get; set; }
 
+        [XmlElement(ElementName = "applicationname")]
+        public string ApplicationName { get; set; }
+
         [XmlElement(ElementName = "server-ip")]
         public string ServerIp { get; set; }
 
@@ -50,9 +53,10 @@ namespace DR.Common.Monitoring.Web.Models
         {
             Checks = new List<Check>();
         }
-        public Monitoring(IEnumerable<KeyValuePair<string, Status>> CheckNamesAndStatuses, bool noFailures, DateTime timeStamp)
+        public Monitoring(IEnumerable<KeyValuePair<string, Status>> CheckNamesAndStatuses, bool noFailures, DateTime timeStamp, string applicationName)
         {
             TimeStamp = timeStamp;
+            ApplicationName = applicationName;
             ApplicationStatus = (noFailures ? "OK" : "ERROR");
             ServerIp = Ip;
             Checks = CheckNamesAndStatuses.Select(cs => new Check(cs.Key, cs.Value)).ToList();
