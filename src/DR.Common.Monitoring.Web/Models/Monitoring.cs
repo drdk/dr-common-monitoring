@@ -53,6 +53,16 @@ namespace DR.Common.Monitoring.Web.Models
         {
             Checks = new List<Check>();
         }
+
+        public Monitoring(IEnumerable<KeyValuePair<string, Status>> CheckNamesAndStatuses, DateTime timeStamp, string applicationName)
+        {
+            var status = CheckNamesAndStatuses.ToArray();
+            TimeStamp = timeStamp;
+            ApplicationName = applicationName;
+            ApplicationStatus = (status.Any(x => !x.Value.Passed.GetValueOrDefault(true)) ? "ERROR" : "OK");
+            ServerIp = Ip;
+            Checks = status.Select(cs => new Check(cs.Key, cs.Value)).ToList();
+        }
         public Monitoring(IEnumerable<KeyValuePair<string, Status>> CheckNamesAndStatuses, bool noFailures, DateTime timeStamp, string applicationName)
         {
             TimeStamp = timeStamp;
