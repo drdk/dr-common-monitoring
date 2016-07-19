@@ -56,7 +56,7 @@ namespace DR.Common.Monitoring.Web.Models
 
         public class CheckWithException : Check
         {
-            public Exception Exception;
+            public Exception Exception { get; set; }
 
             public CheckWithException(string name, Status status)
                 : base(name, status)
