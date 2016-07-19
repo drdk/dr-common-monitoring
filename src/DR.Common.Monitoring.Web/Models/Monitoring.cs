@@ -45,7 +45,11 @@ namespace DR.Common.Monitoring.Web.Models
                 Status = (status.Passed.HasValue ? (status.Passed.Value ? "OK" : "ERROR") : "UNKNOWN");
                 if (status.Duration.HasValue)
                     ResponseInMs = status.Duration.Value.TotalMilliseconds;
-                Message = status.Message;
+
+                if (Status == "ERROR")
+                    Message = String.IsNullOrEmpty(status.Message) ? "No error message" : status.Message;
+                else
+                    Message = status.Message;
             }
         }
 
