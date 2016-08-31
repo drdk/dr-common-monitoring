@@ -16,7 +16,7 @@ namespace DR.Common.Monitoring.Models
         /// Wraps call to protected method RunTest(). Handles exceptions and execution timer.
         /// </summary>
         /// <returns>Status object for RunTest()-call</returns>
-        public Status GetStatus()
+        public Status GetStatus(bool isPrivileged = false)
         {
             lock (Stopwatch)
             {
@@ -27,7 +27,7 @@ namespace DR.Common.Monitoring.Models
                 Stopwatch.Restart();
                 try
                 {
-                    passed = RunTest(ref message);
+                    passed = RunTest(ref message, isPrivileged);
                 }
                 catch (Exception e)
                 {
@@ -35,12 +35,11 @@ namespace DR.Common.Monitoring.Models
                     exception = e;
 
                     HandleException(e, ref message);
-
                 }
                 finally
                 {
                     Stopwatch.Stop();
-                    result = new Status(passed: passed, duration: Stopwatch.Elapsed, message: message, exception: exception);
+                    result = new Status(passed: passed, duration: Stopwatch.Elapsed, message: message, exception: isPrivileged ? exception : null);
                 }
                 return result;
             }
@@ -57,6 +56,6 @@ namespace DR.Common.Monitoring.Models
         /// Must be implemented by derived classes. May throw exceptions.
         /// </summary>
         /// <returns>True of success and False for failure. Should throw exceptions if possible.</returns>
-        protected abstract bool? RunTest(ref string message);
+        protected abstract bool? RunTest(ref string message, bool isPrivileged = false);
     }
 }

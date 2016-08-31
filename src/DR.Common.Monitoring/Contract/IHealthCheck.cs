@@ -22,6 +22,6 @@ namespace DR.Common.Monitoring.Contract
         /// </summary>
         /// <returns>Result of the test run.</returns>
         /// <seealso cref="Status"/>
-        Status GetStatus();
+        Status GetStatus(bool isPrivileged = false);
     }
 }

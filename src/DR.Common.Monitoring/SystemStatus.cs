@@ -22,17 +22,17 @@ namespace DR.Common.Monitoring
             _names = _checks.Select(c => c.Name).ToArray();
         }
         
-        public IEnumerable<KeyValuePair<string,Status>> RunAllChecks()
+        public IEnumerable<KeyValuePair<string,Status>> RunAllChecks(bool isPrivileged = false)
         {
-            return _checks.Select(c => new KeyValuePair<string, Status>(c.Name, c.GetStatus()));
+            return _checks.Select(c => new KeyValuePair<string, Status>(c.Name, c.GetStatus(isPrivileged)));
         }
 
-        public Status RunCheck(string name)
+        public Status RunCheck(string name, bool isPrivileged = false)
         {
             var check = _checks.FirstOrDefault(c => c.Name == name);
             if (check == null)
                 throw new KeyNotFoundException("No check named: "+ name);
-            return check.GetStatus();
+            return check.GetStatus(isPrivileged);
         }
 
         public Status RunProbeCheck(string name, string node)
