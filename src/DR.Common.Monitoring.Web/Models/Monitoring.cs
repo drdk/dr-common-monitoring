@@ -47,9 +47,15 @@ namespace DR.Common.Monitoring.Web.Models
                     ResponseInMs = status.Duration.Value.TotalMilliseconds;
 
                 if (Status == "ERROR")
-                    Message = String.IsNullOrEmpty(status.Message) ? "No error message" : status.Message;
+                    Message = string.IsNullOrEmpty(status.Message) ? "No error message" : status.Message;
                 else
                     Message = status.Message;
+
+                if (status.Exception != null)
+                {
+                    Message += "\n" + status.Exception.GetType().Name + " : " + status.Exception.Message + "\n" +
+                               status.Exception.StackTrace;
+                }
             }
         }
 
