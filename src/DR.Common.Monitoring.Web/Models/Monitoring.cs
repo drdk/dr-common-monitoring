@@ -71,7 +71,8 @@ namespace DR.Common.Monitoring.Web.Models
             ApplicationName = applicationName;
             ApplicationStatus = (status.Any(x => !x.Value.Passed.GetValueOrDefault(true)) ? "ERROR" : "OK");
             ServerIp = Ip;
-            Checks = status.Select(cs => new Check(cs.Key, cs.Value)).ToList();
+            // Hides checks with passed = null , since scom raises alerts for State "UNKNOWN"
+            Checks = status.Where(cs => cs.Value.Passed.HasValue).Select(cs => new Check(cs.Key, cs.Value)).ToList();
         }
         public Monitoring(IEnumerable<KeyValuePair<string, Status>> CheckNamesAndStatuses, bool noFailures, DateTime timeStamp, string applicationName)
         {
@@ -79,7 +80,8 @@ namespace DR.Common.Monitoring.Web.Models
             ApplicationName = applicationName;
             ApplicationStatus = (noFailures ? "OK" : "ERROR");
             ServerIp = Ip;
-            Checks = CheckNamesAndStatuses.Select(cs => new Check(cs.Key, cs.Value)).ToList();
+            // Hides checks with passed = null , since scom raises alerts for State "UNKNOWN"
+            Checks = CheckNamesAndStatuses.Where(cs => cs.Value.Passed.HasValue).Select(cs => new Check(cs.Key, cs.Value)).ToList();
         }
 
         private static string _ip;
