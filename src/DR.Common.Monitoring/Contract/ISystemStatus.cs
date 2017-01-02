@@ -12,6 +12,7 @@ namespace DR.Common.Monitoring.Contract
         /// <summary>
         /// Runs every registred test.
         /// </summary>
+        /// <param name="isPrivileged">Indicates if the check is Privileged.</param>
         /// <returns>Returns a collection of pairs; the key is the check name and the value is the check status object.</returns>
         IEnumerable<KeyValuePair<string, Status>> RunAllChecks(bool isPrivileged = false);
 

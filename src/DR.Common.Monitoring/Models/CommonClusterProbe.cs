@@ -46,6 +46,7 @@ namespace DR.Common.Monitoring.Models
             }
         }
 
+        /// <inheritdoc />
         protected abstract bool? RunTest(string node, ref string message);
     }
 }
