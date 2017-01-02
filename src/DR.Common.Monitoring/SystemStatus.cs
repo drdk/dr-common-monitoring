@@ -15,18 +15,24 @@ namespace DR.Common.Monitoring
     {
         private readonly IHealthCheck[] _checks;
         private readonly string[] _names;
-
+        
+        /// <summary>
+        /// Construtor for System status
+        /// </summary>
+        /// <param name="checks">List of checks to register.</param>
         public SystemStatus(IEnumerable<IHealthCheck> checks)
         {
             _checks = checks.ToArray();
             _names = _checks.Select(c => c.Name).ToArray();
         }
-        
+
+        /// <inheritdoc />
         public IEnumerable<KeyValuePair<string,Status>> RunAllChecks()
         {
             return _checks.Select(c => new KeyValuePair<string, Status>(c.Name, c.GetStatus()));
         }
 
+        /// <inheritdoc />
         public Status RunCheck(string name)
         {
             var check = _checks.FirstOrDefault(c => c.Name == name);
@@ -35,6 +41,7 @@ namespace DR.Common.Monitoring
             return check.GetStatus();
         }
 
+        /// <inheritdoc />
         public Status RunProbeCheck(string name, string node)
         {
             var check = _checks.FirstOrDefault(c => c.Name == name);
@@ -47,6 +54,7 @@ namespace DR.Common.Monitoring
             return probe.GetStatus(node);
         }
 
+        /// <inheritdoc />
         public IEnumerable<string> Names { get { return _names; } }
     }
 }

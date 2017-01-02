@@ -8,6 +8,7 @@ namespace DR.Common.Monitoring.Models
     /// </summary>
     public abstract class CommonHealthCheck : IHealthCheck
     {
+        /// <inheritdoc />
         public abstract string Name { get; }
 
         internal readonly System.Diagnostics.Stopwatch Stopwatch = new System.Diagnostics.Stopwatch();

@@ -32,7 +32,7 @@ namespace DR.Common.Monitoring.Models
         /// </summary>
         /// <param name="passed">True for success, False for failure, null for unknown or undefined.</param>
         /// <param name="duration">Optional parameter defining how long the test-run took.</param>
-        /// <param name="message">Optional text message</param>
+        /// <param name="message">Optional message from the test run.</param>
         /// <param name="exception">Optional paramter defining any caught exceptions.</param>
         public Status(bool? passed = null, TimeSpan? duration = null, string message = null, Exception exception = null)
         {
