@@ -57,6 +57,6 @@ namespace DR.Common.Monitoring.Models
         /// Must be implemented by derived classes. May throw exceptions.
         /// </summary>
         /// <returns>True of success and False for failure. Should throw exceptions if possible.</returns>
-        protected abstract bool? RunTest(ref string message, bool isPrivileged = false);
+        public abstract bool? RunTest(ref string message, bool isPrivileged = false);
     }
 }
