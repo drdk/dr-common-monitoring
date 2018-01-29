@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="Contract\IClusterProbe.cs" />
     <Compile Include="Contract\IHealthCheck.cs" />
+    <Compile Include="Contract\IHealthCheckExtra.cs" />
     <Compile Include="Contract\ISystemStatus.cs" />
     <Compile Include="Models\CommonClusterProbe.cs" />
     <Compile Include="Models\CommonHealthCheck.cs" />
