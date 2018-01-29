@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DR.Common.Monitoring.Models
 {
@@ -41,5 +42,7 @@ namespace DR.Common.Monitoring.Models
             Message = message;
             Exception = exception;
         }
+
+        public IEnumerable<dynamic> Details { get; set; }
     }
 }
