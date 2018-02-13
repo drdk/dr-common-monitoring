@@ -3,6 +3,13 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <IncludeSource>true</IncludeSource>
+    <IncludeSymbols>true</IncludeSymbols>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\DR.Common.Monitoring.xml</DocumentationFile>
+    <VersionPrefix>1.0.1</VersionPrefix>
+    <VersionSuffix>localhost</VersionSuffix>
     <Company>DR (Danish Broadcasting Corporation)</Company>
     <Authors>DR TU</Authors>
     <RepositoryUrl></RepositoryUrl>
