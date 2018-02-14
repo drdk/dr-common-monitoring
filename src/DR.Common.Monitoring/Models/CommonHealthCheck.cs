@@ -26,14 +26,21 @@ namespace DR.Common.Monitoring.Models
                 Exception exception = null;
                 string message = null;
                 IEnumerable<dynamic> details = null;
+                IEnumerable<Reaction> reactions = null;
                 Status result;
                 Stopwatch.Restart();
                 try
                 {
-                    var extras = this as IHealthCheckExtra;
-                    if (extras!=null)
+                    if (this is IHealthCheckExtra extras)
                     {
                         extras.RunTestWithDetails(ref message, ref details, isPrivileged);
+                    }
+                    else if (this is IExtendedHealthCheck extended)
+                    {
+                        var testResult = extended.RunTest(isPrivileged);
+                        message = testResult.Message;
+                        details = testResult.Details;
+                        reactions = testResult.Reactions;
                     }
                     else
                     {
@@ -50,8 +57,8 @@ namespace DR.Common.Monitoring.Models
                 finally
                 {
                     Stopwatch.Stop();
-                    result = new Status(passed: passed, duration: Stopwatch.Elapsed, message: message, exception: isPrivileged ? exception : null);
-                    result.Details = details;
+                    result = new Status(passed: passed, duration: Stopwatch.Elapsed, message: message,
+                        exception: isPrivileged ? exception : null, details: details, reactions: reactions);
                 }
                 return result;
             }
