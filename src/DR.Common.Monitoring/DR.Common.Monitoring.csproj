@@ -8,7 +8,7 @@
     <IncludeSource>true</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\DR.Common.Monitoring.xml</DocumentationFile>
-    <VersionPrefix>1.0.1</VersionPrefix>
+    <VersionPrefix>1.0.2</VersionPrefix>
     <VersionSuffix>localhost</VersionSuffix>
     <Company>DR (Danish Broadcasting Corporation)</Company>
     <Authors>DR TU</Authors>
