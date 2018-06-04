@@ -17,6 +17,9 @@ namespace DR.Common.Monitoring.Web.Models
         public class Check
         {
             public string Name { get; set; }
+
+            public Description Description { get; set; }
+
             public bool? Passed { get; set; }
 
             [XmlIgnore]
@@ -47,6 +50,7 @@ namespace DR.Common.Monitoring.Web.Models
                 Passed = status.Passed;
                 Duration = status.Duration;
                 Message = status.Message;
+                Description = status.Description;
             }
 
             public Check()
