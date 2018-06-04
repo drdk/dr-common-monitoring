@@ -41,7 +41,7 @@ namespace DR.Common.Monitoring.Models
                 {
                     if (this is IHealthCheckExtra extras)
                     {
-                        extras.RunTestWithDetails(ref message, ref details, isPrivileged);
+                        passed = extras.RunTestWithDetails(ref message, ref details, isPrivileged);
                     }
                     else if (this is IExtendedHealthCheck extended)
                     {
@@ -49,10 +49,11 @@ namespace DR.Common.Monitoring.Models
                         message = testResult.Message;
                         details = testResult.Details;
                         reactions = testResult.Reactions;
+                        passed = testResult.Success;
                     }
                     else
                     {
-                        RunTest(ref message, isPrivileged);
+                        passed = RunTest(ref message, isPrivileged);
                     }
                 }
                 catch (Exception e)
