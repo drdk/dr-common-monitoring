@@ -64,24 +64,31 @@ namespace DR.Common.Monitoring.Web.Models
             Checks = new List<Check>();
         }
 
-        public Monitoring(IEnumerable<KeyValuePair<string, Status>> CheckNamesAndStatuses, DateTime timeStamp, string applicationName)
+        public Monitoring(IEnumerable<KeyValuePair<string, Status>> checkNamesAndStatuses, DateTime timeStamp, string applicationName)
         {
-            var status = CheckNamesAndStatuses.ToArray();
+            var status = checkNamesAndStatuses.ToArray();
             TimeStamp = timeStamp;
             ApplicationName = applicationName;
             ApplicationStatus = (status.Any(x => !x.Value.Passed.GetValueOrDefault(true)) ? "ERROR" : "OK");
             ServerIp = Ip;
             // Hides checks with passed = null , since scom raises alerts for State "UNKNOWN"
-            Checks = status.Where(cs => cs.Value.Passed.HasValue).Select(cs => new Check(cs.Key, cs.Value)).ToList();
+            // also hides checks with level lower than Error.
+            Checks = status
+                .Where(cs => cs.Value.Passed.HasValue && cs.Value.Description.Level >= Level.Error)
+                .Select(cs => new Check(cs.Key, cs.Value)).ToList();
         }
-        public Monitoring(IEnumerable<KeyValuePair<string, Status>> CheckNamesAndStatuses, bool noFailures, DateTime timeStamp, string applicationName)
+
+        public Monitoring(IEnumerable<KeyValuePair<string, Status>> checkNamesAndStatuses, bool noFailures, DateTime timeStamp, string applicationName)
         {
             TimeStamp = timeStamp;
             ApplicationName = applicationName;
             ApplicationStatus = (noFailures ? "OK" : "ERROR");
             ServerIp = Ip;
             // Hides checks with passed = null , since scom raises alerts for State "UNKNOWN"
-            Checks = CheckNamesAndStatuses.Where(cs => cs.Value.Passed.HasValue).Select(cs => new Check(cs.Key, cs.Value)).ToList();
+            // also hides checks with level lower than Error.
+            Checks = checkNamesAndStatuses
+                .Where(cs => cs.Value.Passed.HasValue && cs.Value.Description.Level >= Level.Error)
+                .Select(cs => new Check(cs.Key, cs.Value)).ToList();
         }
 
         private static string _ip;

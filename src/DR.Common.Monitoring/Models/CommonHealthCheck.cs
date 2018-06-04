@@ -12,6 +12,14 @@ namespace DR.Common.Monitoring.Models
         /// <inheritdoc />
         public abstract string Name { get; }
 
+        /// <inheritdoc />
+        public virtual Description Description => new Description
+        {
+            Text = null,
+            Level = Level.Error,
+            Link = null
+        };
+
         internal readonly System.Diagnostics.Stopwatch Stopwatch = new System.Diagnostics.Stopwatch();
         
         /// <summary>
@@ -57,7 +65,7 @@ namespace DR.Common.Monitoring.Models
                 finally
                 {
                     Stopwatch.Stop();
-                    result = new Status(passed: passed, duration: Stopwatch.Elapsed, message: message,
+                    result = new Status(description: Description, passed: passed, duration: Stopwatch.Elapsed, message: message,
                         exception: isPrivileged ? exception : null, details: details, reactions: reactions);
                 }
                 return result;

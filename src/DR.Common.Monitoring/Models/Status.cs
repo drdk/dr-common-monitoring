@@ -35,9 +35,10 @@ namespace DR.Common.Monitoring.Models
         /// <param name="duration">Optional parameter defining how long the test-run took.</param>
         /// <param name="message">Optional message from the test run.</param>
         /// <param name="exception">Optional paramter defining any caught exceptions.</param>
-        public Status(bool? passed = null, TimeSpan? duration = null, string message = null, Exception exception = null,
+        public Status(Description description, bool? passed = null, TimeSpan? duration = null, string message = null, Exception exception = null,
             IEnumerable<dynamic> details = null, IEnumerable<Reaction> reactions = null)
         {
+            Description = description;
             Passed = passed;
             Duration = duration;
             Message = message;
@@ -49,6 +50,8 @@ namespace DR.Common.Monitoring.Models
         public IEnumerable<dynamic> Details { get; }
         
         public IEnumerable<Reaction> Reactions { get; }
+
+        public Description Description { get; }
     }
 
 }

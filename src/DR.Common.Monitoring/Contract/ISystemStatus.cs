@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using DR.Common.Monitoring.Models;
 
 namespace DR.Common.Monitoring.Contract

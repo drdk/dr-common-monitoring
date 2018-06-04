@@ -18,6 +18,13 @@ namespace DR.Common.Monitoring.Contract
         string Name { get; }
 
         /// <summary>
+        /// Optional description class, returned in Status objects genereated from a given test. Used for supplying extra text, link,
+        /// and a serverity level. Used to filter out statues lower than Error in scom endpoints. Default to null link and text, and
+        /// level Error if not overwriten.
+        /// </summary>
+        Description Description { get; }
+
+        /// <summary>
         /// Run the test. Must always catch any exceptions, and return them in the Status object.
         /// </summary>
         /// <returns>Result of the test run.</returns>

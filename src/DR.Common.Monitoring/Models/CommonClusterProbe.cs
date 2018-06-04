@@ -40,13 +40,15 @@ namespace DR.Common.Monitoring.Models
                 finally
                 {
                     Stopwatch.Stop();
-                    result = new Status(passed: passed, duration: Stopwatch.Elapsed, message: message, exception: exception);
+                    result = new Status(
+                        description: Description, passed: passed, duration: Stopwatch.Elapsed,
+                        message: message, exception: exception);
                 }
                 return result;
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="CommonHealthCheck" />
         protected abstract bool? RunTest(string node, ref string message);
     }
 }
