@@ -69,9 +69,9 @@ namespace DR.Common.Monitoring.Web.Models
             var status = checkNamesAndStatuses.ToArray();
             TimeStamp = timeStamp;
             ApplicationName = applicationName;
-            ApplicationStatus = (status.Any(x => !x.Value.Passed.GetValueOrDefault(true)) ? "ERROR" : "OK");
+            ApplicationStatus = (status.Any(x => x.Value.Description.Level >= Level.Error && !x.Value.Passed.GetValueOrDefault(true)) ? "ERROR" : "OK");
             ServerIp = Ip;
-            // Hides checks with passed = null , since scom raises alerts for State "UNKNOWN"
+            // Hides checks with passed = null, since scom raises alerts for State "UNKNOWN"
             // also hides checks with level lower than Error.
             Checks = status
                 .Where(cs => cs.Value.Passed.HasValue && cs.Value.Description.Level >= Level.Error)
@@ -84,7 +84,7 @@ namespace DR.Common.Monitoring.Web.Models
             ApplicationName = applicationName;
             ApplicationStatus = (noFailures ? "OK" : "ERROR");
             ServerIp = Ip;
-            // Hides checks with passed = null , since scom raises alerts for State "UNKNOWN"
+            // Hides checks with passed = null, since scom raises alerts for State "UNKNOWN"
             // also hides checks with level lower than Error.
             Checks = checkNamesAndStatuses
                 .Where(cs => cs.Value.Passed.HasValue && cs.Value.Description.Level >= Level.Error)
