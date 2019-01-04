@@ -68,5 +68,15 @@ namespace DR.Common.Monitoring.Web.Models
                 Exception = status.Exception;
             }
         }
+
+        public class CheckWithReactions : CheckWithException
+        {
+            public IEnumerable<Reaction> Reactions { get; }
+
+            public CheckWithReactions(string name, Status status) : base(name, status)
+            {
+                Reactions = status.Reactions;
+            }
+        }
     }
 }
