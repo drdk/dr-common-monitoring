@@ -13,12 +13,12 @@ namespace DR.Common.Monitoring.Models
         public string Text { get; set; }
         
         /// <summary>
-        /// Optional link to external documentaion
+        /// Optional link to external documentation
         /// </summary>
         public Uri Link { get; set; }
 
         /// <summary>
-        /// Serverity level of the given test if does not pass.
+        /// Severity level of the given test if does not pass.
         /// </summary>
         public Level Level { get; set; }
     }

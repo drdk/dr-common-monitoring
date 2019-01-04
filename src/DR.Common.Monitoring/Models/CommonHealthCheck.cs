@@ -5,7 +5,7 @@ using DR.Common.Monitoring.Contract;
 namespace DR.Common.Monitoring.Models
 {
     /// <summary>
-    /// A base for health checks, includes exectution timer and exception handling. 
+    /// A base for health checks, includes execution timer and exception handling. 
     /// </summary>
     public abstract class CommonHealthCheck : IHealthCheck
     {
