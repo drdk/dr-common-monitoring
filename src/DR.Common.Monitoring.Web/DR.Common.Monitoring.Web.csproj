@@ -8,16 +8,7 @@
     <IncludeSource>true</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(MSBuildProjectName).xml</DocumentationFile>
-    <VersionPrefix>1.0.10</VersionPrefix>
-    <VersionSuffix>localhost</VersionSuffix>
-    <Company>DR (Danish Broadcasting Corporation)</Company>
-    <Authors>DR TU</Authors>
-    <RepositoryUrl></RepositoryUrl>
-    <PackageProjectUrl>https://github.com/drdk/dr-common-monitoring</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/drdk/dr-common-monitoring/master/LICENSE</PackageLicenseUrl>
-    <Copyright>DR (Danish Broadcasting Corporation)</Copyright>
     <Description>DR SCOM dtos for health checks</Description>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>

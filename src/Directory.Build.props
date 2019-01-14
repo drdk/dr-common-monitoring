@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <Copyright>DR (Danish Broadcasting Corporation)</Copyright>
+    <Company>DR (Danish Broadcasting Corporation)</Company>
+    <Authors>DR TU - Ondemand Team</Authors>
+    <VersionPrefix>1.0.11</VersionPrefix>
+    <VersionSuffix>localhost</VersionSuffix>
+    <RepositoryUrl>https://github.com/drdk/dr-common-monitoring</RepositoryUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/drdk/dr-common-monitoring/master/LICENSE</PackageLicenseUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+</Project>

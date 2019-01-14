@@ -3,9 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DR.Common.Monitoring", "DR.Common.Monitoring\DR.Common.Monitoring.csproj", "{AEB08EDB-9282-4C6F-AB10-99F0C069A644}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DR.Common.Monitoring", "DR.Common.Monitoring\DR.Common.Monitoring.csproj", "{AEB08EDB-9282-4C6F-AB10-99F0C069A644}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DR.Common.Monitoring.Web", "DR.Common.Monitoring.Web\DR.Common.Monitoring.Web.csproj", "{F4DAD25A-5891-44EA-B192-988C81BA71D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DR.Common.Monitoring.Web", "DR.Common.Monitoring.Web\DR.Common.Monitoring.Web.csproj", "{F4DAD25A-5891-44EA-B192-988C81BA71D9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5E081E1E-5EE1-445E-929C-7927B6C862F6}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
