@@ -1,4 +1,5 @@
-﻿using DR.Common.Monitoring.Models;
+﻿using System;
+using DR.Common.Monitoring.Models;
 
 namespace DR.Common.Monitoring.Contract
 {
@@ -16,19 +17,17 @@ namespace DR.Common.Monitoring.Contract
         /// Check name, should be descriptive to help debugging. Eg. name of the tested area. 
         /// </summary>
         string Name { get; }
-
-        /// <summary>
-        /// Optional description class, returned in Status objects genereated from a given test. Used for supplying extra text, link,
-        /// and a serverity level. Used to filter out statues lower than Error in scom endpoints. Default to null link and text, and
-        /// level Error if not overwriten.
-        /// </summary>
-        Description Description { get; }
+        
+        Level MaximumSeverityLevel { get; }
+        bool IncludedInScom { get; }
+        string DescriptionText { get; }
+        Uri DescriptionLink { get; }
 
         /// <summary>
         /// Run the test. Must always catch any exceptions, and return them in the Status object.
         /// </summary>
         /// <returns>Result of the test run.</returns>
         /// <seealso cref="Status"/>
-        Status GetStatus(bool isPrivileged = false);
+        Status GetStatus(bool isPrivileged);
     }
 }

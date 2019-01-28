@@ -13,6 +13,7 @@ namespace DR.Common.Monitoring
     /// </summary>
     public class SystemStatus : ISystemStatus
     {
+        private readonly bool _isPrivileged;
         private readonly IHealthCheck[] _checks;
         private readonly string[] _names;
         
@@ -20,41 +21,40 @@ namespace DR.Common.Monitoring
         /// Construtor for System status
         /// </summary>
         /// <param name="checks">List of checks to register.</param>
-        public SystemStatus(IEnumerable<IHealthCheck> checks)
+        public SystemStatus(IEnumerable<IHealthCheck> checks, bool isPrivileged = false)
         {
+            _isPrivileged = isPrivileged;
             _checks = checks.ToArray();
             _names = _checks.Select(c => c.Name).ToArray();
         }
 
         /// <inheritdoc />
-        public IEnumerable<KeyValuePair<string,Status>> RunAllChecks(bool isPrivileged = false)
+        public IEnumerable<Status> RunAllChecks()
         {
-            return _checks.Select(c => new KeyValuePair<string, Status>(c.Name, c.GetStatus(isPrivileged)));
+            return _checks.Select(c => c.GetStatus(_isPrivileged));
         }
 
         /// <inheritdoc />
-        public Status RunCheck(string name, bool isPrivileged = false)
+        public Status RunCheck(string name)
         {
-            var check = _checks.FirstOrDefault(c => c.Name == name);
-            if (check == null)
-                throw new KeyNotFoundException("No check named: "+ name);
-            return check.GetStatus(isPrivileged);
+            var check = _checks.FirstOrDefault(c => c.Name == name) ?? 
+                        throw new KeyNotFoundException("No check named: "+ name);
+            return check.GetStatus(_isPrivileged);
         }
 
         /// <inheritdoc />
         public Status RunProbeCheck(string name, string node)
         {
-            var check = _checks.FirstOrDefault(c => c.Name == name);
-            if (check == null)
-                throw new KeyNotFoundException("No check named: " + name);
-            var probe = check as IClusterProbe;
-            if(probe == null)
-                throw new InvalidCastException("Check: "+ name +" is not a cluster probe");
+            var check = _checks.FirstOrDefault(c => c.Name == name) ??
+                        throw new KeyNotFoundException("No check named: " + name);
 
-            return probe.GetStatus(node);
+            var probe = (check as IClusterProbe) ?? 
+                        throw new InvalidCastException("Check: "+ name +" is not a cluster probe");
+
+            return probe.GetStatus(node, _isPrivileged);
         }
 
         /// <inheritdoc />
-        public IEnumerable<string> Names { get { return _names; } }
+        public IEnumerable<string> Names => _names;
     }
 }

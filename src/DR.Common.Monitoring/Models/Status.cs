@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using DR.Common.Monitoring.Contract;
 
 namespace DR.Common.Monitoring.Models
 {
@@ -8,6 +8,17 @@ namespace DR.Common.Monitoring.Models
     /// </summary>
     public class Status
     {
+        public string Name { get;  }
+
+        public Level MaximumSeverityLevel { get; }
+
+        public bool IncludedInScom { get; }
+
+        public string DescriptionText { get; }
+
+        public Uri DescriptionLink { get; }
+
+        public Level CurrentLevel { get; }
         /// <summary>
         /// This property is true if the check passed. If the check can neither fail or pass this property can be null.
         /// </summary>
@@ -28,30 +39,45 @@ namespace DR.Common.Monitoring.Models
         /// </summary>
         public Exception Exception { get; }
 
+        public Reaction[] Reactions { get; }
+
+        public object Payload { get; }
+
         /// <summary>
         /// Constructor for the Status object.
         /// </summary>
+        /// <param name="checkSource">Health check source, used to read name, max level and description.</param>
         /// <param name="passed">True for success, False for failure, null for unknown or undefined.</param>
+        /// <param name="currentLevel"></param>
         /// <param name="duration">Optional parameter defining how long the test-run took.</param>
         /// <param name="message">Optional message from the test run.</param>
-        /// <param name="exception">Optional paramter defining any caught exceptions.</param>
-        public Status(Description description, bool? passed = null, TimeSpan? duration = null, string message = null, Exception exception = null,
-            IEnumerable<dynamic> details = null, IEnumerable<Reaction> reactions = null)
+        /// <param name="exception">Optional parameter defining any caught exceptions.</param>
+        /// <param name="reactions">Optional reactions</param>
+        /// <param name="payload">Optional data payload</param>
+        public Status(IHealthCheck checkSource, bool? passed, Level currentLevel, TimeSpan? duration, string message, Exception exception, Reaction[] reactions, object payload)
         {
-            Description = description;
+            Name = checkSource.Name;
+            MaximumSeverityLevel = checkSource.MaximumSeverityLevel;
+            IncludedInScom = checkSource.IncludedInScom;
+            DescriptionText = checkSource.DescriptionText;
+            DescriptionLink = checkSource.DescriptionLink;
+            if (currentLevel > MaximumSeverityLevel)
+            {
+                CurrentLevel = MaximumSeverityLevel;
+                message +=
+                    $"\n currentLevel: {currentLevel.ToString()} exceeded maximum level {MaximumSeverityLevel.ToString()}, limiting to max.";
+            }
+            else
+            {
+                CurrentLevel = currentLevel;
+            }
             Passed = passed;
             Duration = duration;
             Message = message;
             Exception = exception;
-            Details = details;
             Reactions = reactions;
+            Payload = payload;
+            
         }
-
-        public IEnumerable<dynamic> Details { get; }
-        
-        public IEnumerable<Reaction> Reactions { get; }
-
-        public Description Description { get; }
     }
-
 }
