@@ -22,6 +22,10 @@ namespace DR.Common.Monitoring.Models
 
         internal readonly System.Diagnostics.Stopwatch Stopwatch = new System.Diagnostics.Stopwatch();
 
+        protected CommonHealthCheck(string name) : this(name, Level.Error, true, null,null)
+        {
+           
+        }
         protected CommonHealthCheck(string name, Level maximumSeverityLevel = Level.Error, bool includeInScom = true, string descriptionText = null, Uri descriptionLink = null)
         {
             Name = name;
