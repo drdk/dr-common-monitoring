@@ -49,6 +49,7 @@ namespace DR.Common.Monitoring.Test
             Assert.IsNull(res.DescriptionLink);
             Assert.IsNull(res.Exception);
             Assert.Greater(res.Duration.GetValueOrDefault(), TimeSpan.Zero);
+            Assert.IsTrue(res.IncludedInScom);
         }
 
         private bool? PassTest(ref string msg, ref Level lvl, ref Reaction[] recs, ref object load)
@@ -65,11 +66,32 @@ namespace DR.Common.Monitoring.Test
             Assert.IsFalse(res.Passed.GetValueOrDefault(true));
             Assert.NotNull(res.Exception);
             Assert.AreEqual("failed", res.Exception.Message);
+            var unPrivilegedRes = _sut.Object.GetStatus(false);
+            Assert.IsFalse(unPrivilegedRes.Passed.GetValueOrDefault(true));
+            Assert.IsNull(unPrivilegedRes.Exception);
         }
 
         private bool? ThrowException(ref string msg, ref Level lvl, ref Reaction[] recs, ref object load)
         {
             throw new Exception("failed");
+        }
+
+        [Test]
+        public void ExceedMaximumLevelTest()
+        {
+            _sut.Protected().As<ICheckImpl>().Setup(_testExpression).Returns(new TestImpl(FailExceedTest));
+            var res = _sut.Object.GetStatus(true);
+            Assert.IsFalse(res.Passed.GetValueOrDefault(true));
+            Assert.AreEqual(Level.Error, res.CurrentLevel);
+            Assert.IsTrue(res.Message.Contains("Fatal"));
+
+        }
+
+        private bool? FailExceedTest(ref string msg, ref Level lvl, ref Reaction[] recs, ref object load)
+        {
+            msg = "fatal";
+            lvl = Level.Fatal;
+            return false;
         }
     }
 }
