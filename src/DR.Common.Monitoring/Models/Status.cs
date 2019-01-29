@@ -61,23 +61,13 @@ namespace DR.Common.Monitoring.Models
             IncludedInScom = checkSource.IncludedInScom;
             DescriptionText = checkSource.DescriptionText;
             DescriptionLink = checkSource.DescriptionLink;
-            if (currentLevel > MaximumSeverityLevel)
-            {
-                CurrentLevel = MaximumSeverityLevel;
-                message +=
-                    $"\n currentLevel: {currentLevel.ToString()} exceeded maximum level {MaximumSeverityLevel.ToString()}, limiting to max.";
-            }
-            else
-            {
-                CurrentLevel = currentLevel;
-            }
+            CurrentLevel = currentLevel;
             Passed = passed;
             Duration = duration;
             Message = message;
             Exception = exception;
             Reactions = reactions;
             Payload = payload;
-            
         }
     }
 }

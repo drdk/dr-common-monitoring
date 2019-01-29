@@ -1,5 +1,5 @@
 using System;
-using System.Linq.Expressions;
+using DR.Common.Monitoring.Contract;
 using DR.Common.Monitoring.Models;
 using Moq;
 using Moq.Protected;
@@ -12,17 +12,8 @@ namespace DR.Common.Monitoring.Test
 
         private interface ICheckImpl
         {
-            bool? RunTest(ref string message, ref Level currentLevel, ref Reaction[] reactions, ref object payload);
+            void RunTest(IStatusBuilder statusBuilder);
         }
-
-        private delegate bool? TestImpl(ref string message, ref Level currentLevel, ref Reaction[] reactions,
-            ref object payload);
-
-        private readonly Expression<Func<ICheckImpl, bool?>> _testExpression = x => x.RunTest(
-            ref It.Ref<string>.IsAny,
-            ref It.Ref<Level>.IsAny,
-            ref It.Ref<Reaction[]>.IsAny,
-            ref It.Ref<object>.IsAny);
 
         private Mock<CommonHealthCheck> _sut;
 
@@ -36,10 +27,15 @@ namespace DR.Common.Monitoring.Test
         [Test]
         public void OneHealthCheckTest()
         {
-            _sut.Protected().As<ICheckImpl>().Setup(_testExpression).Returns(new TestImpl(PassTest));
+            _sut.Protected().As<ICheckImpl>().Setup(x=>x.RunTest(It.IsNotNull<IStatusBuilder>())).Callback(
+                (IStatusBuilder sBld) =>
+                {
+                    sBld.MessageBuilder.AppendLine("hello");
+                    sBld.Passed = true;
+                });
             var res = _sut.Object.GetStatus(true);
             Assert.IsTrue(res.Passed.GetValueOrDefault(false));
-            Assert.AreEqual("hello", res.Message);
+            Assert.AreEqual("hello\r\n", res.Message);
             Assert.IsNull(res.Payload);
             Assert.IsNull(res.Reactions);
             Assert.AreEqual(Level.Error, res.CurrentLevel);
@@ -52,16 +48,12 @@ namespace DR.Common.Monitoring.Test
             Assert.IsTrue(res.IncludedInScom);
         }
 
-        private bool? PassTest(ref string msg, ref Level lvl, ref Reaction[] recs, ref object load)
-        {
-            msg = "hello";
-            return true;
-        }
 
         [Test]
         public void ExceptionTest()
         {
-            _sut.Protected().As<ICheckImpl>().Setup(_testExpression).Returns(new TestImpl(ThrowException));
+            _sut.Protected().As<ICheckImpl>().Setup(x => x.RunTest(It.IsNotNull<IStatusBuilder>())).Callback(
+                (IStatusBuilder sBld) => throw new Exception("failed"));
             var res = _sut.Object.GetStatus(true);
             Assert.IsFalse(res.Passed.GetValueOrDefault(true));
             Assert.NotNull(res.Exception);
@@ -71,27 +63,22 @@ namespace DR.Common.Monitoring.Test
             Assert.IsNull(unPrivilegedRes.Exception);
         }
 
-        private bool? ThrowException(ref string msg, ref Level lvl, ref Reaction[] recs, ref object load)
-        {
-            throw new Exception("failed");
-        }
 
         [Test]
         public void ExceedMaximumLevelTest()
         {
-            _sut.Protected().As<ICheckImpl>().Setup(_testExpression).Returns(new TestImpl(FailExceedTest));
+            _sut.Protected().As<ICheckImpl>().Setup(x => x.RunTest(It.IsNotNull<IStatusBuilder>())).Callback(
+                (IStatusBuilder sBld) =>
+                {
+                    sBld.MessageBuilder.AppendLine("fatal");
+                    sBld.CurrentLevel = Level.Fatal;
+                    sBld.Passed = false;
+                });
             var res = _sut.Object.GetStatus(true);
             Assert.IsFalse(res.Passed.GetValueOrDefault(true));
             Assert.AreEqual(Level.Error, res.CurrentLevel);
             Assert.IsTrue(res.Message.Contains("Fatal"));
 
-        }
-
-        private bool? FailExceedTest(ref string msg, ref Level lvl, ref Reaction[] recs, ref object load)
-        {
-            msg = "fatal";
-            lvl = Level.Fatal;
-            return false;
         }
     }
 }
