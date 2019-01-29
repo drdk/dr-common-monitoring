@@ -10,6 +10,9 @@ namespace DR.Common.Monitoring.Models
     /// </summary>
     public abstract class CommonClusterProbe : CommonHealthCheck, IClusterProbe
     {
+
+        protected CommonClusterProbe(string name) : this(name, Level.Error, true, null, null) { }
+
         /// <summary>
         /// ctor
         /// </summary>
