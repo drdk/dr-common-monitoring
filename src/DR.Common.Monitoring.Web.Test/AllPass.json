@@ -1,0 +1,43 @@
+{
+  "NoFailures": true,
+  "Checks": [
+    {
+      "Name": "HealthCheck1",
+      "Description": {
+        "Text": "Mock test 1",
+        "Link": "http://google.com",
+        "Level": "Error"
+      },
+      "Passed": true,
+      "CurrentLevel": "Error",
+      "Duration": "00:00:00.0050000",
+      "DurationString": "PT0.005S",
+      "Message": "hello"
+    },
+    {
+      "Name": "HealthCheck2",
+      "Description": {
+        "Text": "Mock test 2",
+        "Level": "Debug"
+      },
+      "Passed": true,
+      "CurrentLevel": "Debug",
+      "Duration": "00:00:00.0050000",
+      "DurationString": "PT0.005S",
+      "Message": "hello"
+    },
+    {
+      "Name": "HealthCheck3",
+      "Description": {
+        "Text": "Mock test 3",
+        "Level": "Warning"
+      },
+      "Passed": true,
+      "CurrentLevel": "Warning",
+      "Duration": "00:00:00.0050000",
+      "DurationString": "PT0.005S",
+      "Message": "hello"
+    }
+  ],
+  "TimeStamp": "2001-01-01T00:00:00"
+}

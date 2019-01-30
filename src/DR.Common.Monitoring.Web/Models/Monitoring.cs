@@ -20,7 +20,7 @@ namespace DR.Common.Monitoring.Web.Models
             ERROR = 30
         }
 
-        [XmlElement(ElementName = "applicationstatus", DataType = "string")]
+        [XmlElement(ElementName = "applicationstatus")]
         public ScomStatus ApplicationStatus { get; set; }
 
         [XmlElement(ElementName = "applicationname")]
@@ -40,7 +40,7 @@ namespace DR.Common.Monitoring.Web.Models
             [XmlElement(ElementName = "name")]
             public string Name { get; set; }
 
-            [XmlElement(ElementName = "status", DataType = "string")]
+            [XmlElement(ElementName = "status")]
             public ScomStatus Status { get; set; }
             [XmlElement(ElementName = "responseinms")]
             public double ResponseInMs { get; set; }
@@ -95,19 +95,20 @@ namespace DR.Common.Monitoring.Web.Models
             TimeStamp = timeStamp;
             ApplicationName = applicationName;
 
-            if (status.Any(s => s.Passed.GetValueOrDefault(false) && s.CurrentLevel == Level.Warning))
-            {
-                ApplicationStatus = ScomStatus.WARNING;
-            }
-            else if (status.Any(s => s.Passed.GetValueOrDefault(false) && s.CurrentLevel > Level.Warning))
+            if (status.Any(s => !s.Passed.GetValueOrDefault(false) && s.CurrentLevel > Level.Warning))
             {
                 ApplicationStatus = ScomStatus.ERROR;
+            }
+            else if (status.Any(s => !s.Passed.GetValueOrDefault(false) && s.CurrentLevel == Level.Warning))
+            {
+                ApplicationStatus = ScomStatus.WARNING;
             }
             else
             {
                 ApplicationStatus = ScomStatus.OK;
             }
             ServerIp = Ip;
+            Checks = status.Select(s => new Check(s)).ToList();
         }
 
         private static string _ip;
