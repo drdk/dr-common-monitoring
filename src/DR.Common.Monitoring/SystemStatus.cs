@@ -21,7 +21,7 @@ namespace DR.Common.Monitoring
         /// Construtor for System status
         /// </summary>
         /// <param name="checks">List of checks to register.</param>
-        public SystemStatus(IEnumerable<IHealthCheck> checks, bool isPrivileged = false)
+        public SystemStatus(IEnumerable<IHealthCheck> checks, bool isPrivileged = true)
         {
             _isPrivileged = isPrivileged;
             _checks = checks.ToArray();
@@ -38,7 +38,7 @@ namespace DR.Common.Monitoring
         public Status RunCheck(string name)
         {
             var check = _checks.FirstOrDefault(c => c.Name == name) ?? 
-                        throw new KeyNotFoundException("No check named: "+ name);
+                        throw new KeyNotFoundException($"No check named: {name}");
             return check.GetStatus(_isPrivileged);
         }
 
@@ -46,10 +46,10 @@ namespace DR.Common.Monitoring
         public Status RunProbeCheck(string name, string node)
         {
             var check = _checks.FirstOrDefault(c => c.Name == name) ??
-                        throw new KeyNotFoundException("No check named: " + name);
+                        throw new KeyNotFoundException($"No check named: {name}");
 
             var probe = (check as IClusterProbe) ?? 
-                        throw new InvalidCastException("Check: "+ name +" is not a cluster probe");
+                        throw new InvalidCastException($"Check: {name} is not a cluster probe");
 
             return probe.GetStatus(node, _isPrivileged);
         }

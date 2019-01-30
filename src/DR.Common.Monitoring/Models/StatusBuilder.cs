@@ -21,12 +21,7 @@ namespace DR.Common.Monitoring.Models
             _isPrivileged = isPrivileged;
             _stopwatch.Start();
         }
-
-        ~StatusBuilder()
-        {
-            _stopwatch.Stop();
-        }
-
+        
         public StringBuilder MessageBuilder { get; }
         public bool? Passed { get; set; } = null;
 
@@ -74,15 +69,24 @@ namespace DR.Common.Monitoring.Models
         public object Payload { get; set; } = null;
         public Exception Exception { get; set; } = null;
 
-        public Status Status => 
-            new Status(
-                _sourceHealthCheck,
-                Passed,
-                CurrentLevel,
-                _stopwatch.Elapsed,
-                MessageBuilder.ToString(),
-                _isPrivileged ? Exception : null,
-                _reactions?.ToArray(),
-                Payload);
+        public Status Status {
+
+            get
+            {
+                var msg = MessageBuilder.ToString();
+                if (msg == string.Empty)
+                    msg = null;
+                return
+                    new Status(
+                        _sourceHealthCheck,
+                        Passed,
+                        CurrentLevel,
+                        _stopwatch.Elapsed,
+                        msg,
+                        _isPrivileged ? Exception : null,
+                        _reactions?.ToArray(),
+                        Payload);
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DR.Common.Monitoring.Contract;
 
 namespace DR.Common.Monitoring.Models
@@ -35,6 +36,8 @@ namespace DR.Common.Monitoring.Models
         /// <returns>Status object for RunTest(nodeName)-call</returns>
         public Status GetStatus(string nodeName, bool isPrivileged = true)
         {
+            if (!NodeNames.Contains(nodeName))
+                throw new KeyNotFoundException($"No node name : {nodeName}");
 
             var statusBuilder = new StatusBuilder(this, isPrivileged);
             try

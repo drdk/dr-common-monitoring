@@ -52,5 +52,20 @@ namespace DR.Common.Monitoring.Test
             var combinedRes = _sut.Object.GetStatus(true);
             Assert.AreEqual("Node: \"Node1\":\r\nhello\r\n", combinedRes.Message);
         }
+
+
+        [Test]
+        public void ExceptionTest()
+        {
+            _sut.Protected().As<ICheckImpl>().Setup(x => x.RunTest(It.IsAny<string>(), It.IsNotNull<StatusBuilder>())).Callback(
+                (string nodeName, StatusBuilder sBld) => throw new Exception("failed"));
+            var res = _sut.Object.GetStatus("Node1");
+            Assert.IsFalse(res.Passed.GetValueOrDefault(true));
+            Assert.NotNull(res.Exception);
+            Assert.AreEqual("failed", res.Exception.Message);
+            var unPrivilegedRes = _sut.Object.GetStatus(false);
+            Assert.IsFalse(unPrivilegedRes.Passed.GetValueOrDefault(true));
+            Assert.IsNull(unPrivilegedRes.Exception);
+        }
     }
 }
