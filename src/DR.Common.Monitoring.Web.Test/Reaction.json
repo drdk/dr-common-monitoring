@@ -1,0 +1,21 @@
+{
+  "Name": "HealthCheck1",
+  "Description": {
+    "Text": "Mock test 1",
+    "Link": "http://google.com",
+    "Level": "Error"
+  },
+  "Passed": false,
+  "CurrentLevel": "Error",
+  "Reactions": [
+    {
+      "Url": "http://google.com",
+      "Method": "GET",
+      "VisualDescription": "hello1",
+      "Payload": "{\"a\" : 1}"
+    }
+  ],
+  "Duration": "00:00:00.0050000",
+  "DurationString": "PT0.005S",
+  "Message": "hello"
+}
