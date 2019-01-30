@@ -33,7 +33,7 @@ namespace DR.Common.Monitoring.Models
         /// Wraps call to protected method RunTest(nodeName). Handles exceptions and execution timer.
         /// </summary>
         /// <returns>Status object for RunTest(nodeName)-call</returns>
-        public Status GetStatus(string nodeName, bool isPrivileged)
+        public Status GetStatus(string nodeName, bool isPrivileged = true)
         {
 
             var statusBuilder = new StatusBuilder(this, isPrivileged);
@@ -54,10 +54,10 @@ namespace DR.Common.Monitoring.Models
         /// <summary>
         /// Must be implemented by derived classes. May throw exceptions. Should merge status in statusBuilder. 
         /// </summary>
-        protected abstract void RunTest(string node, IStatusBuilder statusBuilder);
+        protected abstract void RunTest(string node, StatusBuilder statusBuilder);
         
 
-        protected override void RunTest(IStatusBuilder statusBuilder)
+        protected override void RunTest(StatusBuilder statusBuilder)
         {
             foreach (var nodeName in NodeNames)
             {

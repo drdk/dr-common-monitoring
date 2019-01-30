@@ -37,7 +37,7 @@ namespace DR.Common.Monitoring.Models
         /// Wraps call to protected method RunTest(). Handles exceptions and execution timer.
         /// </summary>
         /// <returns>Status object for RunTest()-call</returns>
-        public Status GetStatus(bool isPrivileged)
+        public Status GetStatus(bool isPrivileged = true)
         {
             var statusBuilder = new StatusBuilder(this, isPrivileged);
             try
@@ -58,12 +58,12 @@ namespace DR.Common.Monitoring.Models
         /// <summary>
         /// Optionally implemented by derived classes to handle exceptions thrown during GetStatus().
         /// </summary>
-        protected virtual void HandleException(Exception ex, IStatusBuilder statusBuilder) { }
+        protected virtual void HandleException(Exception ex, StatusBuilder statusBuilder) { }
 
 
         /// <summary>
         /// Must be implemented by derived classes. May throw exceptions.
         /// </summary>
-        protected abstract void RunTest(IStatusBuilder statusBuilder);
+        protected abstract void RunTest(StatusBuilder statusBuilder);
     }
 }

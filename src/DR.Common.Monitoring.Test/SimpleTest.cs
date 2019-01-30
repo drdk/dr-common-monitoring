@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using DR.Common.Monitoring.Contract;
 using DR.Common.Monitoring.Models;
 using Moq;
@@ -12,7 +13,7 @@ namespace DR.Common.Monitoring.Test
 
         private interface ICheckImpl
         {
-            void RunTest(IStatusBuilder statusBuilder);
+            void RunTest(StatusBuilder statusBuilder);
         }
 
         private Mock<CommonHealthCheck> _sut;
@@ -27,13 +28,13 @@ namespace DR.Common.Monitoring.Test
         [Test]
         public void OneHealthCheckTest()
         {
-            _sut.Protected().As<ICheckImpl>().Setup(x=>x.RunTest(It.IsNotNull<IStatusBuilder>())).Callback(
-                (IStatusBuilder sBld) =>
+            _sut.Protected().As<ICheckImpl>().Setup(x=>x.RunTest(It.IsNotNull<StatusBuilder>())).Callback(
+                (StatusBuilder sBld) =>
                 {
                     sBld.MessageBuilder.AppendLine("hello");
                     sBld.Passed = true;
                 });
-            var res = _sut.Object.GetStatus(true);
+            var res = _sut.Object.GetStatus();
             Assert.IsTrue(res.Passed.GetValueOrDefault(false));
             Assert.AreEqual("hello\r\n", res.Message);
             Assert.IsNull(res.Payload);
@@ -52,9 +53,9 @@ namespace DR.Common.Monitoring.Test
         [Test]
         public void ExceptionTest()
         {
-            _sut.Protected().As<ICheckImpl>().Setup(x => x.RunTest(It.IsNotNull<IStatusBuilder>())).Callback(
-                (IStatusBuilder sBld) => throw new Exception("failed"));
-            var res = _sut.Object.GetStatus(true);
+            _sut.Protected().As<ICheckImpl>().Setup(x => x.RunTest(It.IsNotNull<StatusBuilder>())).Callback(
+                (StatusBuilder sBld) => throw new Exception("failed"));
+            var res = _sut.Object.GetStatus();
             Assert.IsFalse(res.Passed.GetValueOrDefault(true));
             Assert.NotNull(res.Exception);
             Assert.AreEqual("failed", res.Exception.Message);
@@ -67,18 +68,41 @@ namespace DR.Common.Monitoring.Test
         [Test]
         public void ExceedMaximumLevelTest()
         {
-            _sut.Protected().As<ICheckImpl>().Setup(x => x.RunTest(It.IsNotNull<IStatusBuilder>())).Callback(
-                (IStatusBuilder sBld) =>
+            _sut.Protected().As<ICheckImpl>().Setup(x => x.RunTest(It.IsNotNull<StatusBuilder>())).Callback(
+                (StatusBuilder sBld) =>
                 {
                     sBld.MessageBuilder.AppendLine("fatal");
                     sBld.CurrentLevel = Level.Fatal;
                     sBld.Passed = false;
                 });
-            var res = _sut.Object.GetStatus(true);
+            var res = _sut.Object.GetStatus();
             Assert.IsFalse(res.Passed.GetValueOrDefault(true));
             Assert.AreEqual(Level.Error, res.CurrentLevel);
             Assert.IsTrue(res.Message.Contains("Fatal"));
 
         }
+
+        [Test]
+        public void ReactionsTest()
+        {
+            _sut.Protected().As<ICheckImpl>().Setup(x => x.RunTest(It.IsNotNull<StatusBuilder>())).Callback(
+                (StatusBuilder sBld) =>
+                {
+                   sBld.AddReaction(new Reaction{ Method = "GET", Payload = @"{""a"" : 1}" , Url ="http://google.com", VisualDescription = "hello1"});
+                   sBld.AddReaction( new []
+                   {
+                       new Reaction { Method = "GET", Payload = @"{""a"" : 2}", Url = "http://google.com", VisualDescription = "hello2" },
+                       new Reaction { Method = "GET", Payload = @"{""a"" : 3}", Url = "http://google.com", VisualDescription = "hello3" },
+                   });
+                });
+            var res = _sut.Object.GetStatus();
+            Assert.NotNull(res.Reactions);
+            Assert.AreEqual(3, res.Reactions.Length);
+            Assert.That(res.Reactions.Select(r=>r.VisualDescription), Is.EquivalentTo(new [] { "hello1","hello2","hello3"}));
+            Assert.AreEqual("GET", res.Reactions.First().Method);
+            Assert.AreEqual(@"{""a"" : 1}", res.Reactions.First().Payload);
+            Assert.AreEqual("http://google.com", res.Reactions.First().Url);
+        }
     }
+
 }

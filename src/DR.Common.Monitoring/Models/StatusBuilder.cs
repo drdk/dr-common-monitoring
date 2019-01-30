@@ -5,7 +5,7 @@ using DR.Common.Monitoring.Contract;
 
 namespace DR.Common.Monitoring.Models
 {
-    internal class StatusBuilder : IStatusBuilder
+    public class StatusBuilder 
     {
         private List<Reaction> _reactions;
         private readonly IHealthCheck _sourceHealthCheck;
@@ -13,7 +13,7 @@ namespace DR.Common.Monitoring.Models
         private Level _currentLevel;
         private readonly System.Diagnostics.Stopwatch _stopwatch = new System.Diagnostics.Stopwatch();
 
-        public StatusBuilder(IHealthCheck sourceHealthCheck, bool isPrivileged)
+        internal StatusBuilder(IHealthCheck sourceHealthCheck, bool isPrivileged)
         {
             MessageBuilder = new StringBuilder();
             _sourceHealthCheck = sourceHealthCheck;

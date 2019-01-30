@@ -14,7 +14,7 @@ namespace DR.Common.Monitoring.Test
 
         private interface ICheckImpl
         {
-            void RunTest(string nodeName, IStatusBuilder statusBuilder);
+            void RunTest(string nodeName, StatusBuilder statusBuilder);
         }
 
         private Mock<CommonClusterProbe> _sut;
@@ -30,8 +30,8 @@ namespace DR.Common.Monitoring.Test
         [Test]
         public void OneHealthCheckTest()
         {
-            _sut.Protected().As<ICheckImpl>().Setup(x => x.RunTest(It.IsAny<string>(), It.IsNotNull<IStatusBuilder>())).Callback(
-                (string nodeName, IStatusBuilder sBld) =>
+            _sut.Protected().As<ICheckImpl>().Setup(x => x.RunTest(It.IsAny<string>(), It.IsNotNull<StatusBuilder>())).Callback(
+                (string nodeName, StatusBuilder sBld) =>
                 {
                     sBld.Passed = true;
                     sBld.MessageBuilder.AppendLine("hello");

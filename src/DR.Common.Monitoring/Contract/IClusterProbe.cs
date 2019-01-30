@@ -18,6 +18,6 @@ namespace DR.Common.Monitoring.Contract
         /// </summary>
         /// <param name="nodeName">Node identifier to run status test on.</param>
         /// <returns></returns>
-        Status GetStatus(string nodeName, bool isPrivileged);
+        Status GetStatus(string nodeName, bool isPrivileged = true);
     }
 }
