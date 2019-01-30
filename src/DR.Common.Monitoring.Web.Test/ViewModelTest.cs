@@ -1,18 +1,18 @@
+using DR.Common.Monitoring.Contract;
+using DR.Common.Monitoring.Models;
+using DR.Common.Monitoring.Web.Models;
+using Moq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
-using DR.Common.Monitoring.Contract;
-using DR.Common.Monitoring.Models;
-using DR.Common.Monitoring.Web.Models;
-using ScomMonitoring =  DR.Common.Monitoring.Web.Models.Monitoring;
-using Moq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using NUnit.Framework;
 using Formatting = Newtonsoft.Json.Formatting;
+using ScomMonitoring = DR.Common.Monitoring.Web.Models.Monitoring;
 
 namespace DR.Common.Monitoring.Web.Test
 {
@@ -75,6 +75,9 @@ namespace DR.Common.Monitoring.Web.Test
             var json = JsonConvert.SerializeObject(res, jsonSerializerSettings);
             Console.WriteLine(json);
             Assert.AreEqual(File.ReadAllText("AllPass.json"), json);
+            var objFromJson = JsonConvert.DeserializeObject<SystemStatusModel>(json);
+            Assert.NotNull(objFromJson);
+            Assert.AreEqual(json, JsonConvert.SerializeObject(objFromJson, jsonSerializerSettings));
         }
 
         [TestCase(null)]
@@ -109,6 +112,9 @@ namespace DR.Common.Monitoring.Web.Test
             var json = JsonConvert.SerializeObject(c, jsonSerializerSettings);
             Console.WriteLine(json);
             Assert.AreEqual(File.ReadAllText("Reaction.json"), json);
+            var objFromJson = JsonConvert.DeserializeObject<SystemStatusModel.Check>(json);
+            Assert.NotNull(objFromJson);
+            Assert.AreEqual(json, JsonConvert.SerializeObject(objFromJson, jsonSerializerSettings));
         }
 
         [Test]
@@ -122,6 +128,25 @@ namespace DR.Common.Monitoring.Web.Test
             var json = JsonConvert.SerializeObject(c, jsonSerializerSettings);
             Console.WriteLine(json);
             Assert.AreEqual(File.ReadAllText("Payload.json"), json);
+            var objFromJson = JsonConvert.DeserializeObject<SystemStatusModel.Check>(json);
+            Assert.NotNull(objFromJson);
+            Assert.AreEqual(json, JsonConvert.SerializeObject(objFromJson, jsonSerializerSettings));
+        }
+
+        [Test]
+        public void ExceptionTest()
+        {
+            var s = new Status(_mockCheck1.Object, false, Level.Error, TimeSpan.FromMilliseconds(5), "hello", 
+                new Exception("Failure"), 
+                null, null);
+            var c = new SystemStatusModel.Check(s);
+            Assert.NotNull(c.Exception);
+            var json = JsonConvert.SerializeObject(c, jsonSerializerSettings);
+            Console.WriteLine(json);
+            Assert.AreEqual(File.ReadAllText("Exception.json"), json);
+            var objFromJson = JsonConvert.DeserializeObject<SystemStatusModel.Check>(json);
+            Assert.NotNull(objFromJson);
+            Assert.AreEqual(json, JsonConvert.SerializeObject(objFromJson, jsonSerializerSettings));
         }
 
         [Test]

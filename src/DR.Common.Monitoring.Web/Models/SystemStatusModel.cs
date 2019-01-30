@@ -89,6 +89,7 @@ namespace DR.Common.Monitoring.Web.Models
 
             public string Message { get; set; }
 
+            public Check() { }
             public Check(Status status)
             {
                 Name = status.Name;

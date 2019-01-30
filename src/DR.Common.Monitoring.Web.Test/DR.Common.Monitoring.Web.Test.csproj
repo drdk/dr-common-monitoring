@@ -9,11 +9,15 @@
   <ItemGroup>
     <None Remove="AllPass.json" />
     <None Remove="AllPass.xml" />
+    <None Remove="Exception.json" />
     <None Remove="Payload.json" />
     <None Remove="Reaction.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Exception.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Payload.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
