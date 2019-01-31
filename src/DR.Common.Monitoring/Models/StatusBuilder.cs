@@ -10,7 +10,7 @@ namespace DR.Common.Monitoring.Models
         private List<Reaction> _reactions;
         private readonly IHealthCheck _sourceHealthCheck;
         private readonly bool _isPrivileged;
-        private Level _currentLevel;
+        private SeverityLevel _currentLevel;
         private readonly System.Diagnostics.Stopwatch _stopwatch = new System.Diagnostics.Stopwatch();
 
         internal StatusBuilder(IHealthCheck sourceHealthCheck, bool isPrivileged)
@@ -25,7 +25,7 @@ namespace DR.Common.Monitoring.Models
         public StringBuilder MessageBuilder { get; }
         public bool? Passed { get; set; } = null;
 
-        public Level CurrentLevel
+        public SeverityLevel CurrentLevel
         {
             get => _currentLevel;
             set

@@ -39,9 +39,9 @@ namespace DR.Common.Monitoring.Web.Models
             /// <summary>
             /// Maximum severity level of the given test if does not pass.
             /// </summary>
-            public Level Level { get; set; }
+            public SeverityLevel Level { get; set; }
 
-            public Description(string text, Uri link, Level level)
+            public Description(string text, Uri link, SeverityLevel level)
             {
                 Text = text;
                 Link = link;
@@ -59,7 +59,7 @@ namespace DR.Common.Monitoring.Web.Models
 
             public bool? Passed { get; set; }
 
-            public Level CurrentLevel { get; set; }
+            public SeverityLevel CurrentLevel { get; set; }
 
             public Exception Exception { get; set; }
 

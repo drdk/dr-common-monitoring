@@ -18,7 +18,7 @@ namespace DR.Common.Monitoring.Contract
         /// </summary>
         string Name { get; }
         
-        Level MaximumSeverityLevel { get; }
+        SeverityLevel MaximumSeverityLevel { get; }
         bool IncludedInScom { get; }
         string DescriptionText { get; }
         Uri DescriptionLink { get; }

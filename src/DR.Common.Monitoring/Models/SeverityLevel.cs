@@ -1,6 +1,6 @@
 ﻿namespace DR.Common.Monitoring.Models
 {
-    public enum Level
+    public enum SeverityLevel
     {
         Trace = 0,
         Debug = 1,

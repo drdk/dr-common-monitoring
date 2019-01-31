@@ -11,7 +11,7 @@ namespace DR.Common.Monitoring.Models
     {
         public string Name { get; }
 
-        public Level MaximumSeverityLevel { get; }
+        public SeverityLevel MaximumSeverityLevel { get; }
 
         public bool IncludedInScom { get; }
 
@@ -20,11 +20,11 @@ namespace DR.Common.Monitoring.Models
         public Uri DescriptionLink { get; }
 
 
-        protected CommonHealthCheck(string name) : this(name, Level.Error, true, null, null)
+        protected CommonHealthCheck(string name) : this(name, SeverityLevel.Error, true, null, null)
         {
 
         }
-        protected CommonHealthCheck(string name, Level maximumSeverityLevel = Level.Error, bool includeInScom = true, string descriptionText = null, Uri descriptionLink = null)
+        protected CommonHealthCheck(string name, SeverityLevel maximumSeverityLevel = SeverityLevel.Error, bool includeInScom = true, string descriptionText = null, Uri descriptionLink = null)
         {
             Name = name;
             MaximumSeverityLevel = maximumSeverityLevel;

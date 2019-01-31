@@ -22,20 +22,20 @@ namespace DR.Common.Monitoring.Web.Test
         {
             _mockCheck1 = new Mock<IHealthCheck>();
             _mockCheck1.SetupGet(m => m.Name).Returns("HealthCheck1");
-            _mockCheck1.SetupGet(m => m.MaximumSeverityLevel).Returns(Level.Error);
+            _mockCheck1.SetupGet(m => m.MaximumSeverityLevel).Returns(SeverityLevel.Error);
             _mockCheck1.SetupGet(m => m.DescriptionText).Returns("Mock test 1");
             _mockCheck1.SetupGet(m => m.DescriptionLink).Returns(new Uri("http://google.com"));
             _mockCheck1.SetupGet(m => m.IncludedInScom).Returns(true);
 
             _mockCheck2 = new Mock<IHealthCheck>();
             _mockCheck2.SetupGet(m => m.Name).Returns("HealthCheck2");
-            _mockCheck2.SetupGet(m => m.MaximumSeverityLevel).Returns(Level.Debug);
+            _mockCheck2.SetupGet(m => m.MaximumSeverityLevel).Returns(SeverityLevel.Debug);
             _mockCheck2.SetupGet(m => m.DescriptionText).Returns("Mock test 2");
             _mockCheck2.SetupGet(m => m.IncludedInScom).Returns(false);
 
             _mockCheck3 = new Mock<IHealthCheck>();
             _mockCheck3.SetupGet(m => m.Name).Returns("HealthCheck3");
-            _mockCheck3.SetupGet(m => m.MaximumSeverityLevel).Returns(Level.Warning);
+            _mockCheck3.SetupGet(m => m.MaximumSeverityLevel).Returns(SeverityLevel.Warning);
             _mockCheck3.SetupGet(m => m.DescriptionText).Returns("Mock test 3");
             _mockCheck3.SetupGet(m => m.IncludedInScom).Returns(true);
         }
@@ -43,9 +43,9 @@ namespace DR.Common.Monitoring.Web.Test
         private IEnumerable<Status> AllPass =>
             new[]
             {
-                new Status(_mockCheck1.Object, true, Level.Error, TimeSpan.FromMilliseconds(5), "hello", null, null, null),
-                new Status(_mockCheck2.Object, true, Level.Debug, TimeSpan.FromMilliseconds(5), "hello", null, null, null),
-                new Status(_mockCheck3.Object, true, Level.Warning, TimeSpan.FromMilliseconds(5), "hello", null, null, null)
+                new Status(_mockCheck1.Object, true, SeverityLevel.Error, TimeSpan.FromMilliseconds(5), "hello", null, null, null),
+                new Status(_mockCheck2.Object, true, SeverityLevel.Debug, TimeSpan.FromMilliseconds(5), "hello", null, null, null),
+                new Status(_mockCheck3.Object, true, SeverityLevel.Warning, TimeSpan.FromMilliseconds(5), "hello", null, null, null)
             };
 
         [Test]
@@ -70,7 +70,7 @@ namespace DR.Common.Monitoring.Web.Test
         public void PassedTest(bool? passed)
         {
             
-            var s = new Status(_mockCheck1.Object, passed, Level.Error, TimeSpan.FromMilliseconds(5), "hello", null, null,
+            var s = new Status(_mockCheck1.Object, passed, SeverityLevel.Error, TimeSpan.FromMilliseconds(5), "hello", null, null,
                 null);
             var c = new SystemStatusModel.Check(s);
             Assert.AreEqual(passed,c.Passed);
@@ -81,7 +81,7 @@ namespace DR.Common.Monitoring.Web.Test
         [Test]
         public void ReactionsTest()
         {
-            var s = new Status(_mockCheck1.Object, false, Level.Error, TimeSpan.FromMilliseconds(5), "hello", null,
+            var s = new Status(_mockCheck1.Object, false, SeverityLevel.Error, TimeSpan.FromMilliseconds(5), "hello", null,
                 new[]
                 {
                     new Reaction
@@ -104,7 +104,7 @@ namespace DR.Common.Monitoring.Web.Test
         [Test]
         public void PayloadTest()
         {
-            var s = new Status(_mockCheck1.Object, false, Level.Error, TimeSpan.FromMilliseconds(5), "hello", null,
+            var s = new Status(_mockCheck1.Object, false, SeverityLevel.Error, TimeSpan.FromMilliseconds(5), "hello", null,
                 null,
                 new dynamic[] { new { Foo = "bar", Count = 42 }, new { Foo = "tar", Count = 43 } });
             var c = new SystemStatusModel.Check(s);
@@ -120,7 +120,7 @@ namespace DR.Common.Monitoring.Web.Test
         [Test]
         public void ExceptionTest()
         {
-            var s = new Status(_mockCheck1.Object, false, Level.Error, TimeSpan.FromMilliseconds(5), "hello", 
+            var s = new Status(_mockCheck1.Object, false, SeverityLevel.Error, TimeSpan.FromMilliseconds(5), "hello", 
                 new Exception("Failure"), 
                 null, null);
             var c = new SystemStatusModel.Check(s);

@@ -35,8 +35,8 @@ namespace DR.Common.Monitoring.Test
             Assert.AreEqual("hello\r\n", res.Message);
             Assert.IsNull(res.Payload);
             Assert.IsNull(res.Reactions);
-            Assert.AreEqual(Level.Error, res.CurrentLevel);
-            Assert.AreEqual(Level.Error, res.MaximumSeverityLevel);
+            Assert.AreEqual(SeverityLevel.Error, res.CurrentLevel);
+            Assert.AreEqual(SeverityLevel.Error, res.MaximumSeverityLevel);
             Assert.AreEqual("ClusterProbeCheck", res.Name);
             Assert.IsNull(res.DescriptionText);
             Assert.IsNull(res.DescriptionLink);

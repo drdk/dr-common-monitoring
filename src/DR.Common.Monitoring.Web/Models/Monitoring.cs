@@ -60,7 +60,7 @@ namespace DR.Common.Monitoring.Web.Models
                     }
                     else
                     {
-                        Status = status.CurrentLevel >= Level.Error ? ScomStatus.ERROR : ScomStatus.WARNING;
+                        Status = status.CurrentLevel >= SeverityLevel.Error ? ScomStatus.ERROR : ScomStatus.WARNING;
                     }
                 }
                 else
@@ -95,11 +95,11 @@ namespace DR.Common.Monitoring.Web.Models
             TimeStamp = timeStamp;
             ApplicationName = applicationName;
 
-            if (status.Any(s => !s.Passed.GetValueOrDefault(false) && s.CurrentLevel > Level.Warning))
+            if (status.Any(s => !s.Passed.GetValueOrDefault(false) && s.CurrentLevel > SeverityLevel.Warning))
             {
                 ApplicationStatus = ScomStatus.ERROR;
             }
-            else if (status.Any(s => !s.Passed.GetValueOrDefault(false) && s.CurrentLevel == Level.Warning))
+            else if (status.Any(s => !s.Passed.GetValueOrDefault(false) && s.CurrentLevel == SeverityLevel.Warning))
             {
                 ApplicationStatus = ScomStatus.WARNING;
             }

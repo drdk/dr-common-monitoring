@@ -11,13 +11,13 @@ namespace DR.Common.Monitoring.Models
     public abstract class CommonClusterProbe : CommonHealthCheck, IClusterProbe
     {
 
-        protected CommonClusterProbe(string name) : this(name, Level.Error, true, null, null) { }
+        protected CommonClusterProbe(string name) : this(name, SeverityLevel.Error, true, null, null) { }
 
         /// <summary>
         /// ctor
         /// </summary>
         protected CommonClusterProbe(string name,
-            Level maximumSeverityLevel = Level.Error,
+            SeverityLevel maximumSeverityLevel = SeverityLevel.Error,
             bool includeInScom = true,
             string descriptionText = null,
             Uri descriptionLink = null) : base(name, maximumSeverityLevel, includeInScom, descriptionText, descriptionLink)

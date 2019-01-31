@@ -10,7 +10,7 @@ namespace DR.Common.Monitoring.Models
     {
         public string Name { get;  }
 
-        public Level MaximumSeverityLevel { get; }
+        public SeverityLevel MaximumSeverityLevel { get; }
 
         public bool IncludedInScom { get; }
 
@@ -18,7 +18,7 @@ namespace DR.Common.Monitoring.Models
 
         public Uri DescriptionLink { get; }
 
-        public Level CurrentLevel { get; }
+        public SeverityLevel CurrentLevel { get; }
         /// <summary>
         /// This property is true if the check passed. If the check can neither fail or pass this property can be null.
         /// </summary>
@@ -54,7 +54,7 @@ namespace DR.Common.Monitoring.Models
         /// <param name="exception">Optional parameter defining any caught exceptions.</param>
         /// <param name="reactions">Optional reactions</param>
         /// <param name="payload">Optional data payload</param>
-        public Status(IHealthCheck checkSource, bool? passed, Level currentLevel, TimeSpan? duration, string message, Exception exception, Reaction[] reactions, object payload)
+        public Status(IHealthCheck checkSource, bool? passed, SeverityLevel currentLevel, TimeSpan? duration, string message, Exception exception, Reaction[] reactions, object payload)
         {
             Name = checkSource.Name;
             MaximumSeverityLevel = checkSource.MaximumSeverityLevel;
