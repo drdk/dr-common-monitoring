@@ -58,7 +58,7 @@ namespace DR.Common.Monitoring.Web.Test
             Assert.AreEqual(3, res.Checks.Length);
             var json = res.ToJson();
             Console.WriteLine(json);
-            Assert.AreEqual(File.ReadAllText("AllPass.json"), json);
+            Assert.AreEqual(File.ReadAllText($"{AppDomain.CurrentDomain.BaseDirectory}\\AllPass.json"), json);
             var objFromJson = json.FromJsonTo<SystemStatusModel>();
             Assert.NotNull(objFromJson);
             Assert.AreEqual(json, objFromJson.ToJson());
@@ -95,7 +95,7 @@ namespace DR.Common.Monitoring.Web.Test
             Assert.AreEqual(1, c.Reactions.Count());
             var json = c.ToJson();
             Console.WriteLine(json);
-            Assert.AreEqual(File.ReadAllText("Reaction.json"), json);
+            Assert.AreEqual(File.ReadAllText($"{AppDomain.CurrentDomain.BaseDirectory}\\Reaction.json"), json);
             var objFromJson = json.FromJsonTo<SystemStatusModel.Check>();
             Assert.NotNull(objFromJson);
             Assert.AreEqual(json,objFromJson.ToJson());
@@ -111,7 +111,7 @@ namespace DR.Common.Monitoring.Web.Test
             Assert.NotNull(c.Payload);
             var json = c.ToJson();
             Console.WriteLine(json);
-            Assert.AreEqual(File.ReadAllText("Payload.json"), json);
+            Assert.AreEqual(File.ReadAllText($"{AppDomain.CurrentDomain.BaseDirectory}\\Payload.json"), json);
             var objFromJson = json.FromJsonTo<SystemStatusModel.Check>();
             Assert.NotNull(objFromJson);
             Assert.AreEqual(json, objFromJson.ToJson());
@@ -127,7 +127,7 @@ namespace DR.Common.Monitoring.Web.Test
             Assert.NotNull(c.Exception);
             var json = c.ToJson();
             Console.WriteLine(json);
-            Assert.AreEqual(File.ReadAllText("Exception.json"), json);
+            Assert.AreEqual(File.ReadAllText($"{AppDomain.CurrentDomain.BaseDirectory}\\Exception.json"), json);
             var objFromJson = json.FromJsonTo<SystemStatusModel.Check>();
             Assert.NotNull(objFromJson);
             Assert.AreEqual(json, objFromJson.ToJson());
@@ -147,7 +147,7 @@ namespace DR.Common.Monitoring.Web.Test
             Assert.AreEqual(2,res.Checks.Count);
             var xml = res.ToXml();
             Console.WriteLine(xml);
-            Assert.AreEqual(File.ReadAllText("AllPass.xml").Replace("{{server-ip}}", ip), xml);
+            Assert.AreEqual(File.ReadAllText($"{AppDomain.CurrentDomain.BaseDirectory}\\AllPass.xml").Replace("{{server-ip}}", ip), xml);
         }
     }
 }
