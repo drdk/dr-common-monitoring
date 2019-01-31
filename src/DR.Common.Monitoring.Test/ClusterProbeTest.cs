@@ -9,10 +9,7 @@ namespace DR.Common.Monitoring.Test
     public class ClusterProbeTest
     {
 
-        private interface ICheckImpl
-        {
-            void RunTest(string nodeName, StatusBuilder statusBuilder);
-        }
+      
 
         private Mock<CommonClusterProbe> _sut;
 
@@ -27,7 +24,7 @@ namespace DR.Common.Monitoring.Test
         [Test]
         public void OneHealthCheckTest()
         {
-            _sut.Protected().As<ICheckImpl>().Setup(x => x.RunTest(It.IsAny<string>(), It.IsNotNull<StatusBuilder>())).Callback(
+            _sut.Protected().As<ICommonClusterProbe>().Setup(x => x.RunTest(It.IsAny<string>(), It.IsNotNull<StatusBuilder>())).Callback(
                 (string nodeName, StatusBuilder sBld) =>
                 {
                     sBld.Passed = true;
@@ -54,7 +51,7 @@ namespace DR.Common.Monitoring.Test
         [Test]
         public void ExceptionTest()
         {
-            _sut.Protected().As<ICheckImpl>().Setup(x => x.RunTest(It.IsAny<string>(), It.IsNotNull<StatusBuilder>())).Callback(
+            _sut.Protected().As<ICommonClusterProbe>().Setup(x => x.RunTest(It.IsAny<string>(), It.IsNotNull<StatusBuilder>())).Callback(
                 (string nodeName, StatusBuilder sBld) => throw new Exception("failed"));
             var res = _sut.Object.GetStatus("Node1");
             Assert.IsFalse(res.Passed.GetValueOrDefault(true));

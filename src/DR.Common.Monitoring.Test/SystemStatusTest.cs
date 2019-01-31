@@ -11,16 +11,6 @@ namespace DR.Common.Monitoring.Test
 {
     public class SystemStatusTest
     {
-        private interface ICheck1Impl
-        {
-            void RunTest(StatusBuilder statusBuilder);
-        }
-
-        private interface ICheck2Impl
-        {
-            void RunTest(string nodeName, StatusBuilder statusBuilder);
-        }
-
         private SystemStatus _sut;
         private Mock<CommonHealthCheck> _healthCheckMock1;
         private Mock<CommonClusterProbe> _healthCheckMock2;
@@ -29,11 +19,13 @@ namespace DR.Common.Monitoring.Test
         public void Setup()
         {
             _healthCheckMock1 = new Mock<CommonHealthCheck>("SimpleHealthCheck") { CallBase = true };
-            _healthCheckMock1.Protected().As<ICheck1Impl>().Setup(x => x.RunTest(It.IsNotNull<StatusBuilder>())).Callback(
-                (StatusBuilder sBld) => { });
+            _healthCheckMock1.Protected().As<ICommonHealthCheck>()
+                .Setup(x => x.RunTest(It.IsNotNull<StatusBuilder>()))
+                .Callback((StatusBuilder sBld) => { });
             _healthCheckMock2 = new Mock<CommonClusterProbe>("ClusterProbeCheck") { CallBase = true };
-            _healthCheckMock2.Protected().As<ICheck2Impl>().Setup(x => x.RunTest(It.IsAny<string>(), It.IsNotNull<StatusBuilder>())).Callback(
-                (string nodeName, StatusBuilder sBld) => { });
+            _healthCheckMock2.Protected().As<ICommonClusterProbe>()
+                .Setup(x => x.RunTest(It.IsAny<string>(), It.IsNotNull<StatusBuilder>()))
+                .Callback((string nodeName, StatusBuilder sBld) => { });
             _healthCheckMock2.SetupGet(x => x.NodeNames).Returns(new[] { "Node1" });
         }
 
@@ -41,7 +33,7 @@ namespace DR.Common.Monitoring.Test
         [TestCase(false)]
         public void EmptyTest(bool isPrivileged)
         {
-            Assert.DoesNotThrow(() => _sut = new SystemStatus(new IHealthCheck[] {}, isPrivileged));
+            Assert.DoesNotThrow(() => _sut = new SystemStatus(new IHealthCheck[] { }, isPrivileged));
             Assert.IsEmpty(_sut.Names);
             Assert.IsEmpty(_sut.RunAllChecks());
             Assert.Throws<KeyNotFoundException>(() => _sut.RunCheck("NotFoundCheck"));
@@ -52,10 +44,11 @@ namespace DR.Common.Monitoring.Test
         [TestCase(false)]
         public void TwoCheckTest(bool isPrivileged)
         {
-            Assert.DoesNotThrow(() => _sut = new SystemStatus(new IHealthCheck[] { _healthCheckMock1.Object, _healthCheckMock2.Object }, isPrivileged));
-            Assert.That(_sut.Names, Is.EquivalentTo(new [] { "SimpleHealthCheck", "ClusterProbeCheck" }));
+            Assert.DoesNotThrow(() => 
+                _sut = new SystemStatus(new IHealthCheck[] { _healthCheckMock1.Object, _healthCheckMock2.Object }, isPrivileged));
+            Assert.That(_sut.Names, Is.EquivalentTo(new[] { "SimpleHealthCheck", "ClusterProbeCheck" }));
             var res = _sut.RunAllChecks();
-            Assert.AreEqual(2,res.Count());
+            Assert.AreEqual(2, res.Count());
             Assert.NotNull(_sut.RunCheck("SimpleHealthCheck"));
             Assert.NotNull(_sut.RunCheck("ClusterProbeCheck"));
             Assert.NotNull(_sut.RunProbeCheck("ClusterProbeCheck", "Node1"));

@@ -2,16 +2,11 @@ using DR.Common.Monitoring.Contract;
 using DR.Common.Monitoring.Models;
 using DR.Common.Monitoring.Web.Models;
 using Moq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml;
-using System.Xml.Serialization;
-using Formatting = Newtonsoft.Json.Formatting;
 using ScomMonitoring = DR.Common.Monitoring.Web.Models.Monitoring;
 
 namespace DR.Common.Monitoring.Web.Test
@@ -21,17 +16,6 @@ namespace DR.Common.Monitoring.Web.Test
         private Mock<IHealthCheck> _mockCheck1;
         private Mock<IHealthCheck> _mockCheck2;
         private Mock<IHealthCheck> _mockCheck3;
-
-        private static JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings
-        {
-            DateFormatHandling = DateFormatHandling.IsoDateFormat,
-            NullValueHandling = NullValueHandling.Ignore,
-            Formatting = Formatting.Indented,
-            Converters = new List<JsonConverter>
-            {
-                new StringEnumConverter(),
-            }
-        };
 
         [SetUp]
         public void Setup()
@@ -72,12 +56,12 @@ namespace DR.Common.Monitoring.Web.Test
             Assert.AreEqual(timestamp,res.TimeStamp);
             Assert.IsTrue(res.NoFailures);
             Assert.AreEqual(3, res.Checks.Length);
-            var json = JsonConvert.SerializeObject(res, jsonSerializerSettings);
+            var json = res.ToJson();
             Console.WriteLine(json);
             Assert.AreEqual(File.ReadAllText("AllPass.json"), json);
-            var objFromJson = JsonConvert.DeserializeObject<SystemStatusModel>(json);
+            var objFromJson = json.FromJsonTo<SystemStatusModel>();
             Assert.NotNull(objFromJson);
-            Assert.AreEqual(json, JsonConvert.SerializeObject(objFromJson, jsonSerializerSettings));
+            Assert.AreEqual(json, objFromJson.ToJson());
         }
 
         [TestCase(null)]
@@ -109,12 +93,12 @@ namespace DR.Common.Monitoring.Web.Test
                 null);
             var c = new SystemStatusModel.Check(s);
             Assert.AreEqual(1, c.Reactions.Count());
-            var json = JsonConvert.SerializeObject(c, jsonSerializerSettings);
+            var json = c.ToJson();
             Console.WriteLine(json);
             Assert.AreEqual(File.ReadAllText("Reaction.json"), json);
-            var objFromJson = JsonConvert.DeserializeObject<SystemStatusModel.Check>(json);
+            var objFromJson = json.FromJsonTo<SystemStatusModel.Check>();
             Assert.NotNull(objFromJson);
-            Assert.AreEqual(json, JsonConvert.SerializeObject(objFromJson, jsonSerializerSettings));
+            Assert.AreEqual(json,objFromJson.ToJson());
         }
 
         [Test]
@@ -125,12 +109,12 @@ namespace DR.Common.Monitoring.Web.Test
                 new dynamic[] { new { Foo = "bar", Count = 42 }, new { Foo = "tar", Count = 43 } });
             var c = new SystemStatusModel.Check(s);
             Assert.NotNull(c.Payload);
-            var json = JsonConvert.SerializeObject(c, jsonSerializerSettings);
+            var json = c.ToJson();
             Console.WriteLine(json);
             Assert.AreEqual(File.ReadAllText("Payload.json"), json);
-            var objFromJson = JsonConvert.DeserializeObject<SystemStatusModel.Check>(json);
+            var objFromJson = json.FromJsonTo<SystemStatusModel.Check>();
             Assert.NotNull(objFromJson);
-            Assert.AreEqual(json, JsonConvert.SerializeObject(objFromJson, jsonSerializerSettings));
+            Assert.AreEqual(json, objFromJson.ToJson());
         }
 
         [Test]
@@ -141,18 +125,17 @@ namespace DR.Common.Monitoring.Web.Test
                 null, null);
             var c = new SystemStatusModel.Check(s);
             Assert.NotNull(c.Exception);
-            var json = JsonConvert.SerializeObject(c, jsonSerializerSettings);
+            var json = c.ToJson();
             Console.WriteLine(json);
             Assert.AreEqual(File.ReadAllText("Exception.json"), json);
-            var objFromJson = JsonConvert.DeserializeObject<SystemStatusModel.Check>(json);
+            var objFromJson = json.FromJsonTo<SystemStatusModel.Check>();
             Assert.NotNull(objFromJson);
-            Assert.AreEqual(json, JsonConvert.SerializeObject(objFromJson, jsonSerializerSettings));
+            Assert.AreEqual(json, objFromJson.ToJson());
         }
 
         [Test]
         public void MonitoringTest()
         {
-
             var timestamp = new DateTime(2001, 1, 1);
             var name = "UnitTest";
             var res = new ScomMonitoring(AllPass, timestamp, name);
@@ -162,18 +145,9 @@ namespace DR.Common.Monitoring.Web.Test
             Assert.AreEqual(name,res.ApplicationName);
             Assert.AreEqual(ScomMonitoring.ScomStatus.OK, res.ApplicationStatus);
             Assert.AreEqual(2,res.Checks.Count);
-            var xs = new XmlSerializer(typeof(ScomMonitoring));
-           
-            using (var sw = new StringWriter())
-            {
-                using (var xw = XmlWriter.Create(sw, new XmlWriterSettings{ Indent = true}))
-                {
-                    xs.Serialize(xw, res);
-                    var xml = sw.ToString();
-                    Console.WriteLine(xml);
-                    Assert.AreEqual(File.ReadAllText("AllPass.xml").Replace("{{server-ip}}", ip), xml);
-                }
-            }
+            var xml = res.ToXml();
+            Console.WriteLine(xml);
+            Assert.AreEqual(File.ReadAllText("AllPass.xml").Replace("{{server-ip}}", ip), xml);
         }
     }
 }
