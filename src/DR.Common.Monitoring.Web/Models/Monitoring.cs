@@ -11,8 +11,17 @@ namespace DR.Common.Monitoring.Web.Models
     [XmlRoot(Namespace = "www.dr.dk/status", ElementName = "status")]
     public class Monitoring
     {
+
+        public enum ScomStatus
+        {
+            UNKNOWN = 0,
+            OK = 10,
+            WARNING = 20,
+            ERROR = 30
+        }
+
         [XmlElement(ElementName = "applicationstatus")]
-        public string ApplicationStatus { get; set; }
+        public ScomStatus ApplicationStatus { get; set; }
 
         [XmlElement(ElementName = "applicationname")]
         public string ApplicationName { get; set; }
@@ -32,21 +41,37 @@ namespace DR.Common.Monitoring.Web.Models
             public string Name { get; set; }
 
             [XmlElement(ElementName = "status")]
-            public string Status { get; set; }
+            public ScomStatus Status { get; set; }
             [XmlElement(ElementName = "responseinms")]
             public double ResponseInMs { get; set; }
             [XmlElement(ElementName = "message")]
             public string Message { get; set; }
 
             public Check() { }
-            public Check(string name, Status status)
+            public Check(Status status)
             {
-                Name = name;
-                Status = (status.Passed.HasValue ? (status.Passed.Value ? "OK" : "ERROR") : "UNKNOWN");
+                Name = status.Name;
+
+                if (status.Passed.HasValue)
+                {
+                    if (status.Passed.Value)
+                    {
+                        Status = ScomStatus.OK;
+                    }
+                    else
+                    {
+                        Status = status.CurrentLevel >= SeverityLevel.Error ? ScomStatus.ERROR : ScomStatus.WARNING;
+                    }
+                }
+                else
+                {
+                    Status = ScomStatus.UNKNOWN;
+                }
+
                 if (status.Duration.HasValue)
                     ResponseInMs = status.Duration.Value.TotalMilliseconds;
 
-                if (Status == "ERROR")
+                if (Status > ScomStatus.OK)
                     Message = string.IsNullOrEmpty(status.Message) ? "No error message" : status.Message;
                 else
                     Message = status.Message;
@@ -64,31 +89,26 @@ namespace DR.Common.Monitoring.Web.Models
             Checks = new List<Check>();
         }
 
-        public Monitoring(IEnumerable<KeyValuePair<string, Status>> checkNamesAndStatuses, DateTime timeStamp, string applicationName)
+        public Monitoring(IEnumerable<Status> statuses, DateTime timeStamp, string applicationName)
         {
-            var status = checkNamesAndStatuses.ToArray();
+            var status = statuses.Where(s => s.IncludedInScom).ToArray();
             TimeStamp = timeStamp;
             ApplicationName = applicationName;
-            ApplicationStatus = (status.Any(x => x.Value.Description.Level >= Level.Error && !x.Value.Passed.GetValueOrDefault(true)) ? "ERROR" : "OK");
-            ServerIp = Ip;
-            // Hides checks with passed = null, since scom raises alerts for State "UNKNOWN"
-            // also hides checks with level lower than Error.
-            Checks = status
-                .Where(cs => cs.Value.Passed.HasValue && cs.Value.Description.Level >= Level.Error)
-                .Select(cs => new Check(cs.Key, cs.Value)).ToList();
-        }
 
-        public Monitoring(IEnumerable<KeyValuePair<string, Status>> checkNamesAndStatuses, bool noFailures, DateTime timeStamp, string applicationName)
-        {
-            TimeStamp = timeStamp;
-            ApplicationName = applicationName;
-            ApplicationStatus = (noFailures ? "OK" : "ERROR");
+            if (status.Any(s => !s.Passed.GetValueOrDefault(false) && s.CurrentLevel > SeverityLevel.Warning))
+            {
+                ApplicationStatus = ScomStatus.ERROR;
+            }
+            else if (status.Any(s => !s.Passed.GetValueOrDefault(false) && s.CurrentLevel == SeverityLevel.Warning))
+            {
+                ApplicationStatus = ScomStatus.WARNING;
+            }
+            else
+            {
+                ApplicationStatus = ScomStatus.OK;
+            }
             ServerIp = Ip;
-            // Hides checks with passed = null, since scom raises alerts for State "UNKNOWN"
-            // also hides checks with level lower than Error.
-            Checks = checkNamesAndStatuses
-                .Where(cs => cs.Value.Passed.HasValue && cs.Value.Description.Level >= Level.Error)
-                .Select(cs => new Check(cs.Key, cs.Value)).ToList();
+            Checks = status.Select(s => new Check(s)).ToList();
         }
 
         private static string _ip;

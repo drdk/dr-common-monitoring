@@ -9,82 +9,61 @@ namespace DR.Common.Monitoring.Models
     /// </summary>
     public abstract class CommonHealthCheck : IHealthCheck
     {
-        /// <inheritdoc />
-        public abstract string Name { get; }
+        public string Name { get; }
 
-        /// <inheritdoc />
-        public virtual Description Description => new Description
+        public SeverityLevel MaximumSeverityLevel { get; }
+
+        public bool IncludedInScom { get; }
+
+        public string DescriptionText { get; }
+
+        public Uri DescriptionLink { get; }
+
+
+        protected CommonHealthCheck(string name) : this(name, SeverityLevel.Error, true, null, null)
         {
-            Text = null,
-            Level = Level.Error,
-            Link = null
-        };
 
-        internal readonly System.Diagnostics.Stopwatch Stopwatch = new System.Diagnostics.Stopwatch();
-        
+        }
+        protected CommonHealthCheck(string name, SeverityLevel maximumSeverityLevel = SeverityLevel.Error, bool includeInScom = true, string descriptionText = null, Uri descriptionLink = null)
+        {
+            Name = name;
+            MaximumSeverityLevel = maximumSeverityLevel;
+            IncludedInScom = includeInScom;
+            DescriptionText = descriptionText;
+            DescriptionLink = descriptionLink;
+        }
+
         /// <summary>
         /// Wraps call to protected method RunTest(). Handles exceptions and execution timer.
         /// </summary>
         /// <returns>Status object for RunTest()-call</returns>
-        public Status GetStatus(bool isPrivileged = false)
+        public Status GetStatus(bool isPrivileged = true)
         {
-            lock (Stopwatch)
+            var statusBuilder = new StatusBuilder(this, isPrivileged);
+            try
             {
-                bool? passed = null;
-                Exception exception = null;
-                string message = null;
-                IEnumerable<dynamic> details = null;
-                IEnumerable<Reaction> reactions = null;
-                Status result;
-                Stopwatch.Restart();
-                try
-                {
-                    if (this is IHealthCheckExtra extras)
-                    {
-                        passed = extras.RunTestWithDetails(ref message, ref details, isPrivileged);
-                    }
-                    else if (this is IExtendedHealthCheck extended)
-                    {
-                        var testResult = extended.RunTest(isPrivileged);
-                        message = testResult.Message;
-                        details = testResult.Details;
-                        reactions = testResult.Reactions;
-                        passed = testResult.Success;
-                    }
-                    else
-                    {
-                        passed = RunTest(ref message, isPrivileged);
-                    }
-                }
-                catch (Exception e)
-                {
-                    passed = false;
-                    exception = e;
-
-                    HandleException(e, ref message);
-                }
-                finally
-                {
-                    Stopwatch.Stop();
-                    result = new Status(description: Description, passed: passed, duration: Stopwatch.Elapsed, message: message,
-                        exception: isPrivileged ? exception : null, details: details, reactions: reactions);
-                }
-                return result;
+                RunTest(statusBuilder);
             }
+            catch (Exception e)
+            {
+                statusBuilder.Passed = false;
+                statusBuilder.Exception = e;
+                HandleException(e, statusBuilder);
+            }
+
+            return statusBuilder.Status;
+
         }
 
         /// <summary>
         /// Optionally implemented by derived classes to handle exceptions thrown during GetStatus().
         /// </summary>
-        /// <param name="ex"></param>
-        /// <param name="message"></param>
-        protected virtual void HandleException(Exception ex, ref string message) { }
+        protected virtual void HandleException(Exception ex, StatusBuilder statusBuilder) { }
+
 
         /// <summary>
         /// Must be implemented by derived classes. May throw exceptions.
         /// </summary>
-        /// <returns>True of success and False for failure. Should throw exceptions if possible.</returns>
-        public abstract bool? RunTest(ref string message, bool isPrivileged = false);
-
+        protected abstract void RunTest(StatusBuilder statusBuilder);
     }
 }

@@ -9,7 +9,7 @@ namespace DR.Common.Monitoring.Contract
     public interface IClusterProbe : IHealthCheck
     {
         /// <summary>
-        /// List of identifier of the the registred nodes. 
+        /// List of identifier of the the registered nodes. 
         /// </summary>
         IEnumerable<string> NodeNames { get; }
 
@@ -18,6 +18,6 @@ namespace DR.Common.Monitoring.Contract
         /// </summary>
         /// <param name="nodeName">Node identifier to run status test on.</param>
         /// <returns></returns>
-        Status GetStatus(string nodeName);
+        Status GetStatus(string nodeName, bool isPrivileged = true);
     }
 }

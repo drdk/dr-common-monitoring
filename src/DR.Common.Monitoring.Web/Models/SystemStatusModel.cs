@@ -1,18 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
 using DR.Common.Monitoring.Models;
 
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+
 namespace DR.Common.Monitoring.Web.Models
 {
-    // Extracted from DR.MediaUniverse.RestApi.Web.Models
     public class SystemStatusModel
     {
-        public bool NoFailures;
-        public IEnumerable<CheckWithException> Checks;
-        public DateTime TimeStamp;
+        public bool NoFailures { get; set; }
+        public Check[] Checks { get; set; }
+        public DateTime TimeStamp { get; set; }
+
+        public SystemStatusModel(IEnumerable<Status> statuses, DateTime? timeStamp = null)
+        {
+            Checks = statuses.Select(s => new Check(s)).ToArray();
+            TimeStamp = timeStamp.GetValueOrDefault(DateTime.UtcNow);
+            NoFailures = Checks.All(c => c.Passed.GetValueOrDefault(true));
+        }
+        public SystemStatusModel() { }
+
+        public class Description
+        {
+            /// <summary>
+            /// Extra inline documentation for a given health check
+            /// </summary>
+            public string Text { get; set; }
+
+            /// <summary>
+            /// Optional link to external documentation
+            /// </summary>
+            public Uri Link { get; set; }
+
+            /// <summary>
+            /// Maximum severity level of the given test if does not pass.
+            /// </summary>
+            public SeverityLevel Level { get; set; }
+
+            public Description(string text, Uri link, SeverityLevel level)
+            {
+                Text = text;
+                Link = link;
+                Level = level;
+            }
+
+            public Description() { }
+        }
 
         public class Check
         {
@@ -21,6 +58,14 @@ namespace DR.Common.Monitoring.Web.Models
             public Description Description { get; set; }
 
             public bool? Passed { get; set; }
+
+            public SeverityLevel CurrentLevel { get; set; }
+
+            public Exception Exception { get; set; }
+
+            public IEnumerable<Reaction> Reactions { get; set; }
+
+            public object Payload { get; set; }
 
             [XmlIgnore]
             public TimeSpan? Duration { get; set; }
@@ -44,38 +89,21 @@ namespace DR.Common.Monitoring.Web.Models
 
             public string Message { get; set; }
 
-            public Check(string name, Status status)
+            public Check() { }
+            public Check(Status status)
             {
-                Name = name;
+                Name = status.Name;
                 Passed = status.Passed;
+                CurrentLevel = status.CurrentLevel;
                 Duration = status.Duration;
                 Message = status.Message;
-                Description = status.Description;
-            }
-
-            public Check()
-            {
-            }
-        }
-
-        public class CheckWithException : Check
-        {
-            public Exception Exception { get; set; }
-
-            public CheckWithException(string name, Status status)
-                : base(name, status)
-            {
                 Exception = status.Exception;
-            }
-        }
-
-        public class CheckWithReactions : CheckWithException
-        {
-            public IEnumerable<Reaction> Reactions { get; }
-
-            public CheckWithReactions(string name, Status status) : base(name, status)
-            {
                 Reactions = status.Reactions;
+                Payload = status.Payload;
+                Description = new Description(
+                    status.DescriptionText,
+                    status.DescriptionLink,
+                    status.MaximumSeverityLevel);
             }
         }
     }
