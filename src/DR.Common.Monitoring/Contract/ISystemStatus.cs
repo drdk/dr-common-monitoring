@@ -10,7 +10,7 @@ namespace DR.Common.Monitoring.Contract
     public interface ISystemStatus
     {
         /// <summary>
-        /// Runs every registred test.
+        /// Runs every registered test.
         /// </summary>
         /// <returns>Returns a collection of pairs; the key is the check name and the value is the check status object.</returns>
         IEnumerable<Status> RunAllChecks();
@@ -20,7 +20,7 @@ namespace DR.Common.Monitoring.Contract
         /// </summary>
         /// <param name="name">Name of check to run</param>
         /// <returns>Status object the test run.</returns>
-        /// <exception cref="KeyNotFoundException">If no check with called name is registred.</exception>
+        /// <exception cref="KeyNotFoundException">If no check with called name is registered.</exception>
         Status RunCheck(string name);
 
 
@@ -29,7 +29,7 @@ namespace DR.Common.Monitoring.Contract
         /// </summary>
         /// <param name="name">Name of check to run</param>
         /// <param name="node">Node identifier to query</param>
-        /// <exception cref="KeyNotFoundException">If no check with called name is registred.</exception>
+        /// <exception cref="KeyNotFoundException">If no check with called name is registered.</exception>
         /// <exception cref="InvalidCastException">If called check isn't a IClusterProbe.</exception>
         Status RunProbeCheck(string name, string node);
 

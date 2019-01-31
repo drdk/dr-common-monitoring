@@ -6,7 +6,12 @@
     <VersionPrefix>2.0.0</VersionPrefix>
     <VersionSuffix>localhost</VersionSuffix>
     <RepositoryUrl>https://github.com/drdk/dr-common-monitoring</RepositoryUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/drdk/dr-common-monitoring/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../LICENSE" Pack="true" Visible="false" PackagePath=""/>
+  </ItemGroup>
+
 </Project>

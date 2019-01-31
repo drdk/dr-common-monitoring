@@ -8,17 +8,36 @@ namespace DR.Common.Monitoring.Models
     /// </summary>
     public class Status
     {
+        /// <summary>
+        /// Name of the origin check. 
+        /// </summary>
         public string Name { get;  }
 
+        /// <summary>
+        /// The maximum value CurrentLevel can assume. 
+        /// </summary>
         public SeverityLevel MaximumSeverityLevel { get; }
 
+        /// <summary>
+        /// Indicate whether a test is included in scom results
+        /// </summary>
         public bool IncludedInScom { get; }
 
+        /// <summary>
+        /// Human readable (static) check description.
+        /// </summary>
         public string DescriptionText { get; }
 
+        /// <summary>
+        /// Optional link to documentation for the check. 
+        /// </summary>
         public Uri DescriptionLink { get; }
 
+        /// <summary>
+        /// The current level of the status, is always less than or equal to the MaximumSeverityLevel
+        /// </summary>
         public SeverityLevel CurrentLevel { get; }
+
         /// <summary>
         /// This property is true if the check passed. If the check can neither fail or pass this property can be null.
         /// </summary>
@@ -39,8 +58,15 @@ namespace DR.Common.Monitoring.Models
         /// </summary>
         public Exception Exception { get; }
 
+        /// <summary>
+        /// Optional list of Reactions
+        /// </summary>
+        /// <seealso cref="Reaction"/>
         public Reaction[] Reactions { get; }
 
+        /// <summary>
+        /// Optional payload, must be serializable to and from json.
+        /// </summary>
         public object Payload { get; }
 
         /// <summary>

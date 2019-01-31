@@ -17,7 +17,9 @@ namespace DR.Common.Monitoring.Contract
         /// Status for a single node.
         /// </summary>
         /// <param name="nodeName">Node identifier to run status test on.</param>
-        /// <returns></returns>
+        /// <param name="isPrivileged">If false, exceptions will be removed.</param>
+        /// <returns>Result of the test run.</returns>
+        /// <seealso cref="Status"/>
         Status GetStatus(string nodeName, bool isPrivileged = true);
     }
 }

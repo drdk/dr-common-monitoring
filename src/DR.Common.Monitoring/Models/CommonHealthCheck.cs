@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using DR.Common.Monitoring.Contract;
 
 namespace DR.Common.Monitoring.Models
@@ -9,21 +8,39 @@ namespace DR.Common.Monitoring.Models
     /// </summary>
     public abstract class CommonHealthCheck : IHealthCheck
     {
+        /// <inheritdoc />
         public string Name { get; }
 
+        /// <inheritdoc />
         public SeverityLevel MaximumSeverityLevel { get; }
 
+        /// <inheritdoc />
         public bool IncludedInScom { get; }
 
+        /// <inheritdoc />
         public string DescriptionText { get; }
 
+        /// <inheritdoc />
         public Uri DescriptionLink { get; }
 
-
+        /// <inheritdoc />
+        // ReSharper disable once RedundantOverload.Global // used by tests
+        // ReSharper disable once UnusedMember.Global
+        // ReSharper disable RedundantArgumentDefaultValue
         protected CommonHealthCheck(string name) : this(name, SeverityLevel.Error, true, null, null)
+        // ReSharper restore RedundantArgumentDefaultValue
         {
 
         }
+
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="maximumSeverityLevel"></param>
+        /// <param name="includeInScom"></param>
+        /// <param name="descriptionText"></param>
+        /// <param name="descriptionLink"></param>
         protected CommonHealthCheck(string name, SeverityLevel maximumSeverityLevel = SeverityLevel.Error, bool includeInScom = true, string descriptionText = null, Uri descriptionLink = null)
         {
             Name = name;

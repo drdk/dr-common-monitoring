@@ -1,5 +1,9 @@
-﻿namespace DR.Common.Monitoring.Models
+﻿#pragma warning disable 1591
+namespace DR.Common.Monitoring.Models
 {
+    /// <summary>
+    /// Classification of importance of the the check. 
+    /// </summary>
     public enum SeverityLevel
     {
         Trace = 0,

@@ -11,17 +11,32 @@ namespace DR.Common.Monitoring.Models
     public abstract class CommonClusterProbe : CommonHealthCheck, IClusterProbe
     {
 
-        protected CommonClusterProbe(string name) : this(name, SeverityLevel.Error, true, null, null) { }
+        /// <inheritdoc />
+        // ReSharper disable once RedundantOverload.Global // used by tests
+        // ReSharper disable once UnusedMember.Global
+        // ReSharper disable RedundantArgumentDefaultValue
+        protected CommonClusterProbe(string name) : this(name, SeverityLevel.Error, true, null, null)
+        // ReSharper restore RedundantArgumentDefaultValue
+        {
+
+        }
 
         /// <summary>
         /// ctor
         /// </summary>
+        /// <param name="name"></param>
+        /// <param name="maximumSeverityLevel"></param>
+        /// <param name="includeInScom"></param>
+        /// <param name="descriptionText"></param>
+        /// <param name="descriptionLink"></param>
+        // ReSharper disable once MemberCanBePrivate.Global
         protected CommonClusterProbe(string name,
             SeverityLevel maximumSeverityLevel = SeverityLevel.Error,
             bool includeInScom = true,
             string descriptionText = null,
             Uri descriptionLink = null) : base(name, maximumSeverityLevel, includeInScom, descriptionText, descriptionLink)
         {
+
         }
 
         /// <summary>
@@ -58,8 +73,8 @@ namespace DR.Common.Monitoring.Models
         /// Must be implemented by derived classes. May throw exceptions. Should merge status in statusBuilder. 
         /// </summary>
         protected abstract void RunTest(string node, StatusBuilder statusBuilder);
-        
 
+        /// <inheritdoc />
         protected override void RunTest(StatusBuilder statusBuilder)
         {
             foreach (var nodeName in NodeNames)

@@ -8,19 +8,18 @@ namespace DR.Common.Monitoring
 {
     /// <summary>
     /// The global collection of every registred IHealthCheck implementations.
-    /// Use structure map to bootstrap (already added in Global.asax.cs for the web-project):
-    ///  a.For&lt;IEnumerable&lt;DR.Common.Monitoring.Contract.IHealthCheck&gt;&gt;().Use(x => x.GetAllInstances&lt;DR.Common.Monitoring.Contract.IHealthCheck&gt;());
     /// </summary>
     public class SystemStatus : ISystemStatus
     {
         private readonly bool _isPrivileged;
         private readonly IHealthCheck[] _checks;
         private readonly string[] _names;
-        
+
         /// <summary>
-        /// Construtor for System status
+        /// ctor for System status
         /// </summary>
         /// <param name="checks">List of checks to register.</param>
+        /// <param name="isPrivileged">If false, exceptions will be removed.</param>
         public SystemStatus(IEnumerable<IHealthCheck> checks, bool isPrivileged = true)
         {
             _isPrivileged = isPrivileged;

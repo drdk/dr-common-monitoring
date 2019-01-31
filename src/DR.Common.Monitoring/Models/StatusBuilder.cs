@@ -5,6 +5,9 @@ using DR.Common.Monitoring.Contract;
 
 namespace DR.Common.Monitoring.Models
 {
+    /// <summary>
+    /// Status Builder, used in RunTest-methods
+    /// </summary>
     public class StatusBuilder 
     {
         private List<Reaction> _reactions;
@@ -22,9 +25,19 @@ namespace DR.Common.Monitoring.Models
             _stopwatch.Start();
         }
         
+        /// <summary>
+        /// Message builder
+        /// </summary>
         public StringBuilder MessageBuilder { get; }
+
+        /// <summary>
+        /// This property is true if the check passed. If the check can neither fail or pass this property can be null. Defaults to null.
+        /// </summary>
         public bool? Passed { get; set; } = null;
 
+        /// <summary>
+        /// The current level of the status, is always less than or equal to the MaximumSeverityLevel
+        /// </summary>
         public SeverityLevel CurrentLevel
         {
             get => _currentLevel;
@@ -42,6 +55,10 @@ namespace DR.Common.Monitoring.Models
             }
         }
 
+        /// <summary>
+        /// Add a single Reaction
+        /// </summary>
+        /// <param name="reaction"></param>
         public void AddReaction(Reaction reaction)
         {
             if (_reactions == null)
@@ -54,6 +71,10 @@ namespace DR.Common.Monitoring.Models
             }
         }
 
+        /// <summary>
+        /// Add a range of Reactions
+        /// </summary>
+        /// <param name="reactions"></param>
         public void AddReaction(IEnumerable<Reaction> reactions)
         {
             if (_reactions == null)
@@ -66,9 +87,19 @@ namespace DR.Common.Monitoring.Models
             }
         }
 
+        /// <summary>
+        /// Optional payload, must be serializable to and from json. Defaults to null. 
+        /// </summary>
         public object Payload { get; set; } = null;
+
+        /// <summary>
+        /// Optional Exception. Defaults to null. 
+        /// </summary>
         public Exception Exception { get; set; } = null;
 
+        /// <summary>
+        /// Status Factory method
+        /// </summary>
         public Status Status {
 
             get

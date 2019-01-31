@@ -5,9 +5,15 @@ using System.Net;
 using System.Xml.Serialization;
 using DR.Common.Monitoring.Models;
 
+#pragma warning disable 1591
+// TODO: documentation 
+
 namespace DR.Common.Monitoring.Web.Models
 {
     // Extracted from DR.MediaUniverse.RestApi.Shared.Models
+    /// <summary>
+    /// Scom xml view model. 
+    /// </summary>
     [XmlRoot(Namespace = "www.dr.dk/status", ElementName = "status")]
     public class Monitoring
     {
