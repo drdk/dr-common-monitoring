@@ -17,6 +17,8 @@ namespace DR.Common.Monitoring.Web.Test
         private Mock<IHealthCheck> _mockCheck2;
         private Mock<IHealthCheck> _mockCheck3;
 
+        private const string Name = "UnitTest";
+
         [SetUp]
         public void Setup()
         {
@@ -137,17 +139,48 @@ namespace DR.Common.Monitoring.Web.Test
         public void MonitoringTest()
         {
             var timestamp = new DateTime(2001, 1, 1);
-            var name = "UnitTest";
-            var res = new ScomMonitoring(AllPass, timestamp, name);
+            var res = new ScomMonitoring(AllPass, timestamp, Name);
             var ip = res.ServerIp;
             Assert.NotNull(ip);
             Assert.AreEqual(timestamp,res.TimeStamp);
-            Assert.AreEqual(name,res.ApplicationName);
+            Assert.AreEqual(Name,res.ApplicationName);
             Assert.AreEqual(ScomMonitoring.ScomStatus.OK, res.ApplicationStatus);
             Assert.AreEqual(2,res.Checks.Count);
             var xml = res.ToXml();
             Console.WriteLine(xml);
             Assert.AreEqual(File.ReadAllText($"{AppDomain.CurrentDomain.BaseDirectory}\\AllPass.xml").Replace("{{server-ip}}", ip), xml);
+        }
+
+        [Test]
+        public void WarningRewriteTest()
+        {
+            var timestamp = new DateTime(2001, 1, 1);
+            var s = new Status(_mockCheck3.Object, false, SeverityLevel.Warning, TimeSpan.FromMilliseconds(5), "hello",
+                null, null, null);
+            var res = new ScomMonitoring(new[] {s}, timestamp, Name);
+
+            Assert.AreEqual(ScomMonitoring.ScomStatus.WARNING, res.ApplicationStatus);
+            Assert.That(res.Checks.Select(c => c.Status), Is.All.EqualTo(ScomMonitoring.ScomStatus.WARNING));
+
+            res.HideWarnings();
+
+            Assert.AreEqual(ScomMonitoring.ScomStatus.OK, res.ApplicationStatus);
+            Assert.That(res.Checks.Select(c => c.Status), Is.All.EqualTo(ScomMonitoring.ScomStatus.OK));
+
+
+            s = new Status(_mockCheck1.Object, false, SeverityLevel.Error, TimeSpan.FromMilliseconds(5), "hello",
+                null, null, null);
+
+            res = new ScomMonitoring(new[] { s }, timestamp, Name);
+
+            Assert.AreEqual(ScomMonitoring.ScomStatus.ERROR, res.ApplicationStatus);
+            Assert.That(res.Checks.Select(c => c.Status), Is.All.EqualTo(ScomMonitoring.ScomStatus.ERROR));
+
+            res.HideWarnings();
+
+            Assert.AreEqual(ScomMonitoring.ScomStatus.ERROR, res.ApplicationStatus);
+            Assert.That(res.Checks.Select(c => c.Status), Is.All.EqualTo(ScomMonitoring.ScomStatus.ERROR));
+
         }
     }
 }

@@ -117,6 +117,20 @@ namespace DR.Common.Monitoring.Web.Models
             Checks = status.Select(s => new Check(s)).ToList();
         }
 
+        /// <summary>
+        /// Rewrites any WARNINGs to OKs
+        /// </summary>
+        public void HideWarnings()
+        {
+            if (ApplicationStatus == ScomStatus.WARNING)
+                ApplicationStatus = ScomStatus.OK;
+
+            foreach (var check in Checks)
+            {
+                if (check.Status == ScomStatus.WARNING)
+                    check.Status = ScomStatus.OK;
+            }
+        }
         private static string _ip;
         private static string Ip
         {
