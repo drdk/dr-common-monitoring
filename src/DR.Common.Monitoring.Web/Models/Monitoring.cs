@@ -84,8 +84,9 @@ namespace DR.Common.Monitoring.Web.Models
 
                 if (status.Exception != null)
                 {
-                    Message += "\n" + status.Exception.GetType().Name + " : " + status.Exception.Message + "\n" +
-                               status.Exception.StackTrace;
+                    var exMsg = "";
+                    extractInnerExceptionInfo(status.Exception, ref exMsg);
+                    Message += exMsg;
                 }
             }
         }
@@ -143,6 +144,32 @@ namespace DR.Common.Monitoring.Web.Models
                        where addr.AddressFamily.ToString() == "InterNetwork"
                        select addr.ToString()).FirstOrDefault();
                 return _ip;
+            }
+        }
+
+        /// <summary>
+        /// Helper method used to extract exception message and stacktrace for up to 10 levels of inner exceptions.
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="msg"></param>
+        /// <param name="level">No more than 10 levels of inner exceptions.</param>
+        private static void extractInnerExceptionInfo(Exception ex, ref string msg, int level = 0)
+        {
+            if (level > 10) // Don't go banananananas in recursiveness...
+                return;
+
+            if (ex != null)
+            {
+                if (msg == null)
+                    msg = "";
+
+                if (level > 0)
+                    msg += "\n INNER EXCEPTION [" + level + "]";
+                msg += "\n" + ex.GetType().Name + " : " + ex.Message + "\n" + ex.StackTrace + "\n";
+
+                level++;
+                if (ex.InnerException != null)
+                    extractInnerExceptionInfo(ex.InnerException, ref msg, level);
             }
         }
     }
