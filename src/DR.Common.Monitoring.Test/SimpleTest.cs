@@ -32,7 +32,7 @@ namespace DR.Common.Monitoring.Test
                 });
             var res = _sut.Object.GetStatus();
             Assert.IsTrue(res.Passed.GetValueOrDefault(false));
-            Assert.AreEqual("hello\r\n", res.Message);
+            Assert.AreEqual($"hello{Environment.NewLine}", res.Message);
             Assert.IsNull(res.Payload);
             Assert.IsNull(res.Reactions);
             Assert.AreEqual(SeverityLevel.Error, res.CurrentLevel);
