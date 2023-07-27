@@ -5,7 +5,7 @@ on:
     workflows: [Run Tests]
     types: [completed]
     branches: 
-    - master
+      - master
 
 jobs:
   on-success:
