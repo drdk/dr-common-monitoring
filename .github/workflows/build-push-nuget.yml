@@ -4,13 +4,13 @@ on:
   workflow_run:
     workflows: [Run Tests]
     types: [completed]
-    branches: [master]
+    branches: 
+    - master
 
 jobs:
   on-success:
 
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion != 'failure' }}
     strategy:
       matrix:
         proj: [Monitoring, Monitoring.Web]
@@ -28,6 +28,8 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          ref: master
 
       - name: Setup .NET Core @ Latest
         uses: actions/setup-dotnet@v2
