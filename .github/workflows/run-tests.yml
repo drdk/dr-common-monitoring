@@ -38,4 +38,13 @@ jobs:
       - name: Build test project and run tests
         if: env.PACKAGE_PROJECT_NAME != ''
         run: |
-          dotnet test './${{ env.PACKAGE_PROJECT_NAME }}/${{ env.PACKAGE_PROJECT_NAME }}.csproj'
+          dotnet test './${{ env.PACKAGE_PROJECT_NAME }}/${{ env.PACKAGE_PROJECT_NAME }}.csproj' --logger "trx;LogFileName=test-results.trx"
+          
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: DotNET Tests
+          path: "**/test-results.trx"                            
+          reporter: dotnet-trx
+          fail-on-error: true
