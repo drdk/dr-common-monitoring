@@ -6,7 +6,6 @@ on:
     types: [completed]    
 
 jobs:
-  on-success:
 
     runs-on: ubuntu-latest
     strategy:
@@ -61,10 +60,3 @@ jobs:
       # Skip duplicates since GPR does not support symbols in a separate nupkg file
       - name: Push generated package to GitHub registry
         run: dotnet nuget push ./out/*.nupkg --skip-duplicate
-  on-failure:
-  
-    runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
-    steps:
-      - run: echo 'The triggering workflow failed'
-
