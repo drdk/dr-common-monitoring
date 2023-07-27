@@ -18,8 +18,7 @@
     "RemoteStackIndex": 0,
     "ExceptionMethod": null,
     "HResult": -2146233088,
-    "Source": null,
-    "WatsonBuckets": null
+    "Source": null
   },
   "Duration": "00:00:00.0050000",
   "DurationString": "PT0.005S",

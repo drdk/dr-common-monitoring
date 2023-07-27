@@ -4,8 +4,7 @@ on:
   workflow_run:
     workflows: [Run Tests]
     types: [completed]
-    branches:
-      - master
+    branches: [master]
 
 jobs:
   on-success:
