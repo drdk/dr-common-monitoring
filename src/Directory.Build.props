@@ -3,7 +3,7 @@
     <Copyright>DR (Danish Broadcasting Corporation)</Copyright>
     <Company>DR (Danish Broadcasting Corporation)</Company>
     <Authors>DR TU - Ondemand Team</Authors>
-    <VersionPrefix>2.1.0</VersionPrefix>
+    <Version>2.1.0</Version>
     <RepositoryUrl>https://github.com/drdk/dr-common-monitoring</RepositoryUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
