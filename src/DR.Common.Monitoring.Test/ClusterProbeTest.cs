@@ -32,7 +32,7 @@ namespace DR.Common.Monitoring.Test
                 });
             var res = _sut.Object.GetStatus("Node1", true);
             Assert.IsTrue(res.Passed.GetValueOrDefault(false));
-            Assert.AreEqual("hello\r\n", res.Message);
+            Assert.AreEqual($"hello{Environment.NewLine}", res.Message);
             Assert.IsNull(res.Payload);
             Assert.IsNull(res.Reactions);
             Assert.AreEqual(SeverityLevel.Error, res.CurrentLevel);
@@ -44,7 +44,7 @@ namespace DR.Common.Monitoring.Test
             Assert.Greater(res.Duration.GetValueOrDefault(), TimeSpan.Zero);
             Assert.IsTrue(res.IncludedInScom);
             var combinedRes = _sut.Object.GetStatus(true);
-            Assert.AreEqual("Node: \"Node1\":\r\nhello\r\n", combinedRes.Message);
+            Assert.AreEqual($"Node: \"Node1\":{Environment.NewLine}hello{Environment.NewLine}", combinedRes.Message);
         }
 
 
