@@ -3,7 +3,6 @@ name: NuGet Generation
 on:
   workflow_run:
     workflows: [Run Tests]
-    branches: [master]
     types: [completed]    
 
 jobs:
