@@ -22,6 +22,7 @@ jobs:
         PACKAGE_PROJECT_DIR: DR.Common.${{ matrix.proj }}
         PACKAGE_PROJECT_NAME: DR.Common.${{ matrix.proj }}
 
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
 
       - name: Checkout repository
