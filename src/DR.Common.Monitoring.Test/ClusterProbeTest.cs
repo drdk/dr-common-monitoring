@@ -16,7 +16,6 @@ namespace DR.Common.Monitoring.Test
         [SetUp]
         public void Setup()
         {
-
             _sut = new Mock<CommonClusterProbe>("ClusterProbeCheck") { CallBase = true };
             _sut.SetupGet(x => x.NodeNames).Returns(new [] {"Node1"});
         }
