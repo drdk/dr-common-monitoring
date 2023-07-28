@@ -82,19 +82,19 @@ jobs:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Update project file version
-        uses: jacobtomlinson/gha-find-replace@v3
+        uses: jacobtomlinson/gha-find-replace@v2
         with:
           find: '(<Version>\d+\.\d+)\.(\d+)(<)'
           replace: '$1.${{ github.run_number }}$3'
           include: './Directory.Build.props'
         
-      - name: modifiedfiles
-        run: |
-          echo ${{ env.modifiedfiles }}
+      # - name: modifiedfiles
+        # run: |
+          # echo ${{ env.modifiedfiles }}
           
-      - name: print props
-        run: |
-          cat ./Directory.Build.props
+      # - name: print props
+        # run: |
+          # cat ./Directory.Build.props
 
       # Force GeneratePackageOnBuild to false since dotnet pack does not build when
       # it is true (https://github.com/dotnet/sdk/issues/10335)
