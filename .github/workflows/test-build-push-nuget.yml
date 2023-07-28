@@ -1,0 +1,99 @@
+name: Test dependent packaging
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        proj: [Monitoring.Test, Monitoring.Web.Test]
+        
+    defaults:
+      run:
+        working-directory: ./src
+        
+    name: Unit testing - ${{ matrix.proj }}
+    env:
+        PACKAGE_PROJECT_DIR: DR.Common.${{ matrix.proj }}
+        PACKAGE_PROJECT_NAME: DR.Common.${{ matrix.proj }}
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - name: Setup .NET Core @ Latest
+        uses: actions/setup-dotnet@v2
+        with:
+          source-url: https://nuget.pkg.github.com/drdk/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          
+      - name: Build test project and run tests
+        if: env.PACKAGE_PROJECT_NAME != ''
+        run: |
+          dotnet test './${{ env.PACKAGE_PROJECT_NAME }}/${{ env.PACKAGE_PROJECT_NAME }}.csproj' --logger "trx;LogFileName=test-results.trx"
+          
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: DotNET Tests
+          path: "**/test-results.trx"                            
+          reporter: dotnet-trx
+          fail-on-error: true
+    
+  deploy:
+
+    runs-on: ubuntu-latest
+    needs: test
+    strategy:
+      matrix:
+        proj: [Monitoring, Monitoring.Web]
+
+    defaults:
+      run:
+        working-directory: ./src
+
+    name: Update NuGet package - ${{ matrix.proj }}
+    env:
+        PACKAGE_PROJECT_DIR: DR.Common.${{ matrix.proj }}
+        PACKAGE_PROJECT_NAME: DR.Common.${{ matrix.proj }}
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - name: Setup .NET Core @ Latest
+        uses: actions/setup-dotnet@v2
+        with:
+          source-url: https://nuget.pkg.github.com/drdk/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Update project file version
+        uses: jacobtomlinson/gha-find-replace@v3
+        with:
+          find: '(<Version>\d+\.\d+)\.(\d+)(<)'
+          replace: '$1.${{ github.run_number }}${{ env.PR_BRANCH_NAME }}$3'
+          include: './Directory.Build.props'
+
+      # Force GeneratePackageOnBuild to false since dotnet pack does not build when
+      # it is true (https://github.com/dotnet/sdk/issues/10335)
+      - name: Build solution and generate NuGet package
+        run: |
+          dotnet pack './${{ env.PACKAGE_PROJECT_DIR }}/${{ env.PACKAGE_PROJECT_NAME }}.csproj' -c Release -o out /p:GeneratePackageOnBuild=false
+
+      # Skip duplicates since GPR does not support symbols in a separate nupkg file
+      - name: Push generated package to GitHub registry
+        run: dotnet nuget push ./out/*.nupkg --skip-duplicate
