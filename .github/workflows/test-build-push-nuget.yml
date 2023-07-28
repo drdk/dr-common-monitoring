@@ -85,8 +85,12 @@ jobs:
         uses: jacobtomlinson/gha-find-replace@v3
         with:
           find: '(<Version>\d+\.\d+)\.(\d+)(<)'
-          replace: '$1.${{ github.run_number }}${{ env.PR_BRANCH_NAME }}$3'
+          replace: '$1.${{ github.run_number }}$3'
           include: './Directory.Build.props'
+        
+      - name: modifiedfiles
+        run: |
+          echo ${{ env.modifiedfiles }}
           
       - name: print props
         run: |
