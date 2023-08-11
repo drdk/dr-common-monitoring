@@ -3,7 +3,10 @@ name: Test dependent packaging
 on:
   push:
     branches:
+      - development
       - master
+    paths-ignore:
+      - '.github/**'
 
 jobs:
   test:
@@ -80,12 +83,21 @@ jobs:
           source-url: https://nuget.pkg.github.com/drdk/index.json
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v7
+
+      - name: If not default branch, get branch name to add to Version
+        if: steps.branch-name.outputs.is_default == 'false'
+        run: |
+          echo "PR_BRANCH_NAME=-${{ steps.branch-name.outputs.current_branch }}" >> $GITHUB_ENV
 
       - name: Update project file version
         uses: jacobtomlinson/gha-find-replace@v1
         with:
           find: '(<Version>\d+\.\d+)\.(\d+)(<)'
-          replace: '$1.${{ github.run_number }}$3'
+          replace: '$1.${{ github.run_number }}${{ env.PR_BRANCH_NAME }}$3'
           include: './Directory.Build.props'
 
       # Force GeneratePackageOnBuild to false since dotnet pack does not build when
@@ -94,6 +106,5 @@ jobs:
         run: |
           dotnet pack './${{ env.PACKAGE_PROJECT_DIR }}/${{ env.PACKAGE_PROJECT_NAME }}.csproj' -c Release -o out /p:GeneratePackageOnBuild=false
 
-      # Skip duplicates since GPR does not support symbols in a separate nupkg file
       - name: Push generated package to GitHub registry
-        run: dotnet nuget push ./out/*.nupkg --skip-duplicate
+        run: dotnet nuget push ./out/*.nupkg
