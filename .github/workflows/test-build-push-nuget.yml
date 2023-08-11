@@ -29,8 +29,6 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.workflow_run.head_branch }}
 
       - name: Setup .NET Core @ Latest
         uses: actions/setup-dotnet@v2
@@ -74,8 +72,6 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.workflow_run.head_branch }}
 
       - name: Setup .NET Core @ Latest
         uses: actions/setup-dotnet@v2
